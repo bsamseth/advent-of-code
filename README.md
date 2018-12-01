@@ -1,2 +1,2 @@
-# advent-of-code-2018
-Working repo for Advent of Code 2018.
+# Advent of Code
+Working repo for [Advent of Code](https://adventofcode.com)
