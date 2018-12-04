@@ -14,6 +14,8 @@ with open('input1.txt', 'r') as f:
         datestr, comment = re.match('\[([0-9\- :]+)\] (.*)', line).groups()
         data.append(Entry(datetime.datetime.strptime(datestr, '%Y-%m-%d %H:%M'), comment))
 
+# Part 1
+#
 # Accumulate the minutes slept for each guard. The dict is
 # indexed by guard id, and contains a len-60 array with one element
 # for each minute of the midnight hour. Each element is the number
@@ -38,6 +40,14 @@ for entry in sorted(data):
 # that contributed the most.
 sleepy_guard = max(guards, key=lambda g: np.sum(guards[g]))
 sleepy_minute = np.argmax(guards[sleepy_guard])
-print('Guard #{} x minute {} = {}'.format(sleepy_guard, sleepy_minute, sleepy_guard * sleepy_minute))
+print('Strategy 1: Guard #{} x minute {} = {}'.format(sleepy_guard, sleepy_minute, sleepy_guard * sleepy_minute))
 
+
+# Part 2.
+#
+# Pick the guard based on who has the largest count for any single minute.
+# Only difference is to select from the dict based on np.max and not np.sum.
+sleepy_guard = max(guards, key=lambda g: np.max(guards[g]))
+sleepy_minute = np.argmax(guards[sleepy_guard])
+print('Strategy 2: Guard #{} x minute {} = {}'.format(sleepy_guard, sleepy_minute, sleepy_guard * sleepy_minute))
 
