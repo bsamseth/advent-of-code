@@ -8,7 +8,6 @@ verify_ssl = true
 [packages]
 advent-of-code-data = "*"
 numpy = "*"
-tqdm = "*"
 
 [requires]
 python_version = "3.7"
