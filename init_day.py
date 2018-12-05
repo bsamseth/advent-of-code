@@ -1,7 +1,8 @@
 """
 Fetch data and description for a given day and year and output it given folder.
 
-By default the current day is attempted.
+By default the current day is attempted. The AoC session key must be provided,
+by default it is assumed to be located in ~/.config/aocd/token.
 """
 # from aocd import get_data
 import argparse
