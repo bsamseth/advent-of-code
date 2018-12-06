@@ -2,6 +2,14 @@ import numpy as np
 from itertools import count
 
 points = np.loadtxt('input.txt', dtype=int, delimiter=', ')
+# points = np.array([
+#     [1, 1],
+#     [1, 6],
+#     [8, 3],
+#     [3, 4],
+#     [5, 5],
+#     [8, 9]]
+# )
 
 def manhattan_spiral(x0=0, y0=0):
     """
@@ -51,3 +59,22 @@ for i, coords in enumerate(manhattan_spiral(x0, y0)):
 
     areas_prev += areas
 
+
+# Part 2.
+# Same idea, walk along the spiral and count the number of points that
+# fulfill the criteria. If we have a non-empty region and it does not increase
+# for one loop around the spiral, then we can stop because the region will
+# not grow any more.
+region_size = 0
+for i, coords in enumerate(manhattan_spiral(x0, y0)):
+    changed = False
+    areas = np.zeros_like(areas_prev)
+    for x, y in coords:
+        dist = np.sum(np.abs(x - points[:, 0]) + np.abs(y - points[:, 1]))
+        if dist < 10000:
+            region_size += 1
+            changed = True
+
+    if region_size > 0 and not changed:
+        print("Size of region with Manhattan distance to all points < 10000:", region_size)
+        break
