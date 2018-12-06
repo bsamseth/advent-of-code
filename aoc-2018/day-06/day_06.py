@@ -1,15 +1,8 @@
 import numpy as np
 from itertools import count
 
-points = np.loadtxt('input.txt', dtype=int, delimiter=', ')
-# points = np.array([
-#     [1, 1],
-#     [1, 6],
-#     [8, 3],
-#     [3, 4],
-#     [5, 5],
-#     [8, 9]]
-# )
+points = np.loadtxt("input.txt", dtype=int, delimiter=", ")
+
 
 def manhattan_spiral(x0=0, y0=0):
     """
@@ -23,6 +16,7 @@ def manhattan_spiral(x0=0, y0=0):
     [(-2, 0), (-1, 1), (-1, -1), (0, 2), (0, -2), (1, 1), (1, -1), (2, 0)]
     ...
     """
+
     def loop(dist):
         for i in range(-dist, dist + 1):
             yield x0 + i, y0 + dist - abs(i)
@@ -31,6 +25,7 @@ def manhattan_spiral(x0=0, y0=0):
 
     for dist in count(0):
         yield loop(dist)
+
 
 # Start at the center of the points (not so important where, but a reasonable start).
 x0, y0 = [int(a) for a in np.mean(points, axis=0)]
@@ -49,7 +44,9 @@ for i, coords in enumerate(manhattan_spiral(x0, y0)):
         closest_first = np.argmin(dists)
         closest_last = np.argmin(dists[::-1])
 
-        if closest_first == len(points) - closest_last - 1:  # No tie, someone is closest
+        if (
+            closest_first == len(points) - closest_last - 1
+        ):  # No tie, someone is closest
             areas[closest_first] += 1
 
     if i > minimum_spiral_size:
@@ -77,5 +74,7 @@ for i, coords in enumerate(manhattan_spiral(x0, y0)):
             changed = True
 
     if region_size > 0 and not changed:
-        print("Size of region with Manhattan distance to all points < 10000:", region_size)
+        print(
+            "Size of region with Manhattan distance to all points < 10000:", region_size
+        )
         break
