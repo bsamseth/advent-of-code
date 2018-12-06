@@ -13,8 +13,8 @@ points = np.loadtxt('input.txt', dtype=int, delimiter=', ')
 
 def manhattan_spiral(x0=0, y0=0):
     """
-    Generate lists of points where the Manhattan distance
-    to (x0, y0) increases by one per list.
+    Generate generators of points where the Manhattan distance
+    to (x0, y0) increases by one per generator.
 
     For (x0, y0) = (0, 0):
 
@@ -23,13 +23,14 @@ def manhattan_spiral(x0=0, y0=0):
     [(-2, 0), (-1, 1), (-1, -1), (0, 2), (0, -2), (1, 1), (1, -1), (2, 0)]
     ...
     """
-    for dist in count(0):
-        points = []
+    def loop(dist):
         for i in range(-dist, dist + 1):
-            points.append((x0 + i, y0 + dist - abs(i)))
+            yield x0 + i, y0 + dist - abs(i)
             if dist != abs(i):
-                points.append((x0 + i, y0 + abs(i) - dist))
-        yield points
+                yield x0 + i, y0 + abs(i) - dist
+
+    for dist in count(0):
+        yield loop(dist)
 
 # Start at the center of the points (not so important where, but a reasonable start).
 x0, y0 = [int(a) for a in np.mean(points, axis=0)]
