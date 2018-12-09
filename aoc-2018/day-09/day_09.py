@@ -26,7 +26,9 @@ class Circle(object):
 
     def place_marble(self, value):
         if value % 23 != 0:
-            self.current = Marble(value).place_between(self.current.right, self.current.right.right)
+            self.current = Marble(value).place_between(
+                self.current.right, self.current.right.right
+            )
             return 0
 
         marble = self.current
@@ -36,26 +38,22 @@ class Circle(object):
         marble.remove()
         return value + marble.value
 
-    def __str__(self):
-        s = [self.current.value]
-        marble = self.current.right
-        while marble != self.current:
-            s.append(marble.value)
-            marble = marble.right
-        start = s.index(0)
-        return ' '.join(str(m) for m in s[start:] + s[:start]).replace(f'{self.current.value}', f'({self.current.value})')
 
 def play(n_players, largest_marble):
-    players = {p: 0 for p in range(1, n_players+1)}
+    players = {p: 0 for p in range(1, n_players + 1)}
     circle = Circle()
-    for marble, player in zip(range(1, largest_marble+1), cycle(players)):
+    for marble, player in zip(range(1, largest_marble + 1), cycle(players)):
         players[player] += circle.place_marble(marble)
-        # print(f'[{player}]', circle)
     return max(players.values())
 
 
-with open('input.txt', 'r') as f:
-    n_players, largest_marble = [int(_) for _ in re.match('([0-9]+)[^0-9]*([0-9]+)', f.read()).groups()]
+with open("input.txt", "r") as f:
+    n_players, largest_marble = [
+        int(_) for _ in re.match("([0-9]+)[^0-9]*([0-9]+)", f.read()).groups()
+    ]
 
-print('Winning elf\' score:', play(n_players, largest_marble))
-print('Winning elf\' score with 100 times more marbles:', play(n_players, largest_marble * 100))
+print("Winning elf' score:", play(n_players, largest_marble))
+print(
+    "Winning elf' score with 100 times more marbles:",
+    play(n_players, largest_marble * 100),
+)
