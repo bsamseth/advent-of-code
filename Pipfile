@@ -11,6 +11,7 @@ numpy = "*"
 tomd = "*"
 bs4 = "*"
 requests = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.7"
