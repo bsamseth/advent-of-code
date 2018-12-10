@@ -150,6 +150,7 @@ After 3 seconds, the message appeared briefly: `**HI**`. Of course, your message
 **What message will eventually appear in the sky?**
 
 Your puzzle answer was `EJZEAAPE`.
+![message](https://raw.githubusercontent.com/bsamseth/advent-of-code/master/aoc-2018/day-10/message.png)
 
 ## --- Part Two ---
 
