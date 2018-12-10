@@ -149,10 +149,22 @@ After 3 seconds, the message appeared briefly: `**HI**`. Of course, your message
 
 **What message will eventually appear in the sky?**
 
-To begin, [get your puzzle input](10/input).
+Your puzzle answer was `EJZEAAPE`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+Good thing you didn't have to wait, because that would have taken a long time - much longer than the `**3**` seconds in the example above.
+
+Impressed by your sub-hour communication capabilities, the Elves are curious: **exactly how many seconds would they have needed to wait for that message to appear?**
+
+Your puzzle answer was `10054`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](10/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22The+Stars+Align%22+%2D+Day+10+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F10&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F10&amp;title=%22The+Stars+Align%22+%2D+Day+10+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22The+Stars+Align%22+%2D+Day+10+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F10&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F10&amp;title=I%27ve+completed+%22The+Stars+Align%22+%2D+Day+10+%2D+Advent+of+Code+2018)] this puzzle.
