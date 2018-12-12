@@ -74,10 +74,22 @@ In this example, after 20 generations, the pots shown as `#` contain plants, the
 
 **After `20` generations, what is the sum of the numbers of all pots which contain a plant?**
 
-To begin, [get your puzzle input](12/input).
+Your puzzle answer was `1430`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+You realize that 20 generations aren't enough.  After all, these plants will need to last another 1500 years to even reach your timeline, not to mention your future.
+
+**After fifty billion (`50000000000`) generations, what is the sum of the numbers of all pots which contain a plant?**
+
+Your puzzle answer was `1150000000457`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](12/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Subterranean+Sustainability%22+%2D+Day+12+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F12&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F12&amp;title=%22Subterranean+Sustainability%22+%2D+Day+12+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Subterranean+Sustainability%22+%2D+Day+12+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F12&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F12&amp;title=I%27ve+completed+%22Subterranean+Sustainability%22+%2D+Day+12+%2D+Advent+of+Code+2018)] this puzzle.
