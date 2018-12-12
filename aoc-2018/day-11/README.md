@@ -63,10 +63,29 @@ For grid serial number `42`, the largest 3x3 square's top-left is `**21,61**` (w
 
 **What is the `X,Y` coordinate of the top-left fuel cell of the 3x3 square with the largest total power?**
 
-Your puzzle input is `4172`.
+Your puzzle answer was `243,43`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+You discover a dial on the side of the device; it seems to let you select a square of **any size**, not just 3x3. Sizes from 1x1 to 300x300 are supported.
+
+Realizing this, you now must find the **square of any size with the largest total power**. Identify this square by including its size as a third parameter after the top-left coordinate: a 9x9 square with a top-left corner of `3,5` is identified as `3,5,9`.
+
+For example:
+
+- For grid serial number `18`, the largest total square (with a total power of `113`) is 16x16 and has a top-left corner of `90,269`, so its identifier is `**90,269,16**`.
+- For grid serial number `42`, the largest total square (with a total power of `119`) is 12x12 and has a top-left corner of `232,251`, so its identifier is `**232,251,12**`.
+
+**What is the `X,Y,size` identifier of the square with the largest total power?**
+
+Your puzzle answer was `236,151,15`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+Your puzzle input was `4172`.
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Chronal+Charge%22+%2D+Day+11+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F11&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F11&amp;title=%22Chronal+Charge%22+%2D+Day+11+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Chronal+Charge%22+%2D+Day+11+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F11&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F11&amp;title=I%27ve+completed+%22Chronal+Charge%22+%2D+Day+11+%2D+Advent+of+Code+2018)] this puzzle.
