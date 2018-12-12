@@ -12,6 +12,7 @@ tomd = "*"
 bs4 = "*"
 requests = "*"
 matplotlib = "*"
+numba = "*"
 
 [requires]
 python_version = "3.7"
