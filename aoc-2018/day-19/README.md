@@ -51,10 +51,22 @@ In detail, when running this program, the following events occur:
 
 **What value is left in register `0`** when the background process halts?
 
-To begin, [get your puzzle input](19/input).
+Your puzzle answer was `1500`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+A new background process immediately spins up in its place. It appears identical, but on closer inspection, you notice that **this time, register `0` started with the value `1`**.
+
+**What value is left in register `0`** when this new background process halts?
+
+Your puzzle answer was `18869760`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](19/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Go+With+The+Flow%22+%2D+Day+19+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F19&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F19&amp;title=%22Go+With+The+Flow%22+%2D+Day+19+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Go+With+The+Flow%22+%2D+Day+19+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F19&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F19&amp;title=I%27ve+completed+%22Go+With+The+Flow%22+%2D+Day+19+%2D+Advent+of+Code+2018)] this puzzle.
