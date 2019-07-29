@@ -176,10 +176,63 @@ After following their respective paths for a while, the carts eventually crash. 
 
 In this example, the location of the first crash is `**7,3**`.
 
-To begin, [get your puzzle input](13/input).
+Your puzzle answer was `124,90`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+There isn't much you can do to prevent crashes in this ridiculous system. However, by predicting the crashes, the Elves know where to be in advance and **instantly remove the two crashing carts** the moment any crash occurs.
+
+They can proceed like this for a while, but eventually, they're going to run out of carts. It could be useful to figure out where the last cart that **hasn't** crashed will end up.
+
+For example:
+
+```
+/&gt;-&lt;\  
+|   |  
+| /&lt;+-\
+| | | v
+\&gt;+&lt;/ |
+  |   ^
+  \&lt;-&gt;/
+
+/---\  
+|   |  
+| v-+-\
+| | | |
+\-+-/ |
+  |   |
+  ^---^
+
+/---\  
+|   |  
+| /-+-\
+| v | |
+\-+-/ |
+  ^   ^
+  \---/
+
+/---\  
+|   |  
+| /-+-\
+| | | |
+\-+-/ **^**
+  |   |
+  \---/
+
+```
+
+After four very expensive crashes, a tick ends with only one cart remaining; its final location is `**6,4**`.
+
+**What is the location of the last cart** at the end of the first tick where it is the only cart left?
+
+Your puzzle answer was `145,88`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](13/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Mine+Cart+Madness%22+%2D+Day+13+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F13&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F13&amp;title=%22Mine+Cart+Madness%22+%2D+Day+13+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Mine+Cart+Madness%22+%2D+Day+13+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F13&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F13&amp;title=I%27ve+completed+%22Mine+Cart+Madness%22+%2D+Day+13+%2D+Advent+of+Code+2018)] this puzzle.

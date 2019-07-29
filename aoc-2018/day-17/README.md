@@ -177,10 +177,24 @@ So, in the example above, counting both water at rest (`~`) and other sand tiles
 
 **How many tiles can the water reach** within the range of `y` values in your scan?
 
-To begin, [get your puzzle input](17/input).
+Your puzzle answer was `44743`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+After a very long time, the water spring will run dry. How much water will be retained?
+
+In the example above, water that won't eventually drain out is shown as `~`, a total of `**29**` tiles.
+
+**How many water tiles are left** after the water spring stops producing water and all remaining water not at rest has drained?
+
+Your puzzle answer was `34172`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](17/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Reservoir+Research%22+%2D+Day+17+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F17&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F17&amp;title=%22Reservoir+Research%22+%2D+Day+17+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Reservoir+Research%22+%2D+Day+17+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F17&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F17&amp;title=I%27ve+completed+%22Reservoir+Research%22+%2D+Day+17+%2D+Advent+of+Code+2018)] this puzzle.

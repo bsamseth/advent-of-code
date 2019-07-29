@@ -46,8 +46,6 @@ The Elves think their skill will improve after making a few recipes (your puzzle
 
 Your puzzle answer was `5992684592`.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 ## --- Part Two ---
 
 As it turns out, you got the Elves' plan backwards.  They actually want to know how many recipes appear on the scoreboard to the left of the first recipes whose scores are the digits from your puzzle input.
@@ -59,10 +57,14 @@ As it turns out, you got the Elves' plan backwards.  They actually want to know 
 
 **How many recipes appear on the scoreboard to the left of the score sequence in your puzzle input?**
 
-Your puzzle input is still `165061`.
+Your puzzle answer was `20181148`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+Your puzzle input was `165061`.
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+Part+One+of+%22Chocolate+Charts%22+%2D+Day+14+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F14&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F14&amp;title=I%27ve+completed+Part+One+of+%22Chocolate+Charts%22+%2D+Day+14+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Chocolate+Charts%22+%2D+Day+14+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F14&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F14&amp;title=I%27ve+completed+%22Chocolate+Charts%22+%2D+Day+14+%2D+Advent+of+Code+2018)] this puzzle.

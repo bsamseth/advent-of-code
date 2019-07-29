@@ -73,10 +73,22 @@ You collect many of these samples (the first section of your puzzle input). The 
 
 Ignoring the opcode numbers, **how many samples in your puzzle input behave like three or more opcodes?**
 
-To begin, [get your puzzle input](16/input).
+Your puzzle answer was `500`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+Using the samples you collected, work out the number of each opcode and execute the test program (the second section of your puzzle input).
+
+**What value is contained in register `0` after executing the test program?**
+
+Your puzzle answer was `533`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](16/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Chronal+Classification%22+%2D+Day+16+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F16&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F16&amp;title=%22Chronal+Classification%22+%2D+Day+16+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Chronal+Classification%22+%2D+Day+16+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F16&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F16&amp;title=I%27ve+completed+%22Chronal+Classification%22+%2D+Day+16+%2D+Advent+of+Code+2018)] this puzzle.
