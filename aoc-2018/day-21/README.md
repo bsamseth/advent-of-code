@@ -23,10 +23,22 @@ Because time travel is a dangerous activity, the activation system begins with a
 
 **What is the lowest non-negative integer value for register `0` that causes the program to halt after executing the fewest instructions?** (Executing the same instruction multiple times counts as multiple instructions executed.)
 
-To begin, [get your puzzle input](21/input).
+Your puzzle answer was `10961197`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+In order to determine the timing window for your underflow exploit, you also need an upper bound:
+
+**What is the lowest non-negative integer value for register `0` that causes the program to halt after executing the most instructions?** (The program must actually halt; running forever does not count as halting.)
+
+Your puzzle answer was `8164934`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](21/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Chronal+Conversion%22+%2D+Day+21+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F21&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F21&amp;title=%22Chronal+Conversion%22+%2D+Day+21+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Chronal+Conversion%22+%2D+Day+21+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F21&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F21&amp;title=I%27ve+completed+%22Chronal+Conversion%22+%2D+Day+21+%2D+Advent+of+Code+2018)] this puzzle.
