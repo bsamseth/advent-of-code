@@ -158,10 +158,22 @@ After 10 minutes, there are `37` wooded acres and `31` lumberyards.  Multiplying
 
 **What will the total resource value of the lumber collection area be after 10 minutes?**
 
-To begin, [get your puzzle input](18/input).
+Your puzzle answer was `394420`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+This important natural resource will need to last for at least thousands of years.  Are the Elves collecting this lumber sustainably?
+
+**What will the total resource value of the lumber collection area be after 1000000000 minutes?**
+
+Your puzzle answer was `174420`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](18/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Settlers+of+The+North+Pole%22+%2D+Day+18+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F18&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F18&amp;title=%22Settlers+of+The+North+Pole%22+%2D+Day+18+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Settlers+of+The+North+Pole%22+%2D+Day+18+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F18&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F18&amp;title=I%27ve+completed+%22Settlers+of+The+North+Pole%22+%2D+Day+18+%2D+Advent+of+Code+2018)] this puzzle.
