@@ -162,10 +162,22 @@ Furthest room requires passing 31 doors
 
 **What is the largest number of doors you would be required to pass through to reach a room?** That is, find the room for which the shortest path from your starting location to that room would require passing through the most doors; what is the fewest doors you can pass through to reach it?
 
-To begin, [get your puzzle input](20/input).
+Your puzzle answer was `4025`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+Okay, so the facility is **big**.
+
+**How many rooms have a shortest path from your current location that pass through at least `1000` doors?**
+
+Your puzzle answer was `8186`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your advent calendar](/2018) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](20/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22A+Regular+Map%22+%2D+Day+20+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F20&amp;related=ericwastl&amp;hashtags=AdventOfCode)
-[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F20&amp;title=%22A+Regular+Map%22+%2D+Day+20+%2D+Advent+of+Code+2018)] this puzzle.
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22A+Regular+Map%22+%2D+Day+20+%2D+Advent+of+Code+2018&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F20&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+[Reddit](http://www.reddit.com/submit?url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F20&amp;title=I%27ve+completed+%22A+Regular+Map%22+%2D+Day+20+%2D+Advent+of+Code+2018)] this puzzle.
