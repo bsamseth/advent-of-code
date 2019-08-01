@@ -16,23 +16,24 @@ from bs4 import BeautifulSoup
 from tomd import Tomd
 
 
-def get_content(year, day, path='', session_key=None):
+def get_content(year, day, path="", session_key=None):
     url = "https://adventofcode.com/{}/day/{}".format(year, day)
     if path:
-        url += '/' + path
+        url += "/" + path
 
-    resp = requests.get(url, headers={'cookie':'session={};'.format(session_key)})
+    resp = requests.get(url, headers={"cookie": "session={};".format(session_key)})
 
     if not resp.ok:
-        raise Exception("Bad request: {} (verify the session key)".format(resp.status_code))
+        raise Exception(
+            "Bad request: {} (verify the session key)".format(resp.status_code)
+        )
 
     if path:  # Input data saved as is.
         return resp.text.strip()
 
     # HTML rendered as markdown.
-    soup = BeautifulSoup(resp.text, 'html.parser')
+    soup = BeautifulSoup(resp.text, "html.parser")
     return Tomd(str(soup.main)).markdown
-
 
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -54,7 +55,7 @@ parser.add_argument(
 parser.add_argument(
     "--session-key",
     default="~/.config/aocd/token",
-    help="Location of AoC session key file."
+    help="Location of AoC session key file.",
 )
 
 args = parser.parse_args()
@@ -73,14 +74,14 @@ if not os.path.exists(output):
 if not os.path.exists(args.session_key):
     raise Exception("Bad session key path: {}".format(args.session_key))
 
-with open(args.session_key, 'r') as f:
+with open(args.session_key, "r") as f:
     SESSION_KEY = f.read().strip()
 
 # Write data file.
-with open(os.path.join(output, 'input.txt'), "w") as f:
+with open(os.path.join(output, "input.txt"), "w") as f:
     f.write(get_content(args.year, args.day, "input", session_key=SESSION_KEY))
 
 
 # Write description.
-with open(os.path.join(output, 'README.md'), 'w') as f:
+with open(os.path.join(output, "README.md"), "w") as f:
     f.write(get_content(args.year, args.day, session_key=SESSION_KEY))

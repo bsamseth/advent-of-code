@@ -1,4 +1,4 @@
-defs ={
+defs = {
     "addr": "r[A] + r[B]",
     "addi": "r[A] + B",
     "mulr": "r[A] * r[B]",
@@ -18,11 +18,13 @@ defs ={
 }
 
 for name, body in defs.items():
-    exec(f"""
+    exec(
+        f"""
 def {name}(i, r):
     op, A, B, C = i
     r[C] = {body}
-    return r""")
+    return r"""
+    )
 
 instructions = {name: eval(name) for name in defs}
 
@@ -42,7 +44,7 @@ for sample in part1.split("\n\n"):
     output = eval(third.split(": ")[-1])
 
     equal_count = 0
-    for name, func  in instructions.items():
+    for name, func in instructions.items():
         out = func(instruction[:], registers[:])
         if out == output:
             equal_count += 1
@@ -68,9 +70,8 @@ while queue:
             queue.add(name)
 
 registers = [0, 0, 0, 0]
-for line in part2.split('\n'):
+for line in part2.split("\n"):
     instruction = [int(d) for d in line.split()]
     registers = instructions[opcodes[instruction[0]]](instruction, registers)
 
 print("Part 2:", registers[0])
-

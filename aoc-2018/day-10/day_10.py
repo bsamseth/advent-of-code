@@ -43,7 +43,7 @@ wait_time = 10054
 x += wait_time * vx
 y += wait_time * vy
 plt.scatter(x, y)
-plt.axis('equal')
+plt.axis("equal")
 print(f"Message appears after {wait_time} seconds")
 
 plt.show()

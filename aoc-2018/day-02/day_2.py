@@ -1,7 +1,7 @@
 from collections import Counter
 
-with open('input1.txt', 'r') as f:
-    ids = f.read().strip().split('\n')
+with open("input1.txt", "r") as f:
+    ids = f.read().strip().split("\n")
 
 # Part 1
 double_count = 0
@@ -11,7 +11,7 @@ for i in ids:
     double_count += any(count == 2 for count in counts.values())
     tripple_count += any(count == 3 for count in counts.values())
 
-print('Checksum:', double_count * tripple_count)
+print("Checksum:", double_count * tripple_count)
 
 # Part 2.
 # The naive search (for each id, check all others for a match) is O(N^2).
@@ -24,7 +24,7 @@ assert all(len(i) == len(ids[0]) for i in ids)
 done = False
 for j in range(len(ids[0])):
     seen = set()
-    for i in (id_i[:j] + id_i[j+1:] for id_i in ids):
+    for i in (id_i[:j] + id_i[j + 1 :] for id_i in ids):
         if i in seen:
             done = True
             break
@@ -33,5 +33,4 @@ for j in range(len(ids[0])):
     if done:
         break
 
-print('Common chracters:', i)
-
+print("Common chracters:", i)
