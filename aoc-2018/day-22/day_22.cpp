@@ -9,7 +9,7 @@
 using Point = std::pair<int, int>;
 using Time = int;
 using Equipment = int;
-using State = std::tuple<Time, Point, Equipment>;
+using State = std::tuple<Time, Time, Point, Equipment>;
 using VisitedEntry = std::tuple<Point, Equipment>;
 
 constexpr Point Directions[4] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
@@ -70,6 +70,12 @@ inline int type(const Point& pos)
     return erosion(pos) % 3;
 }
 
+// Consistent and admissable estimate of remaining time to target.
+inline int heuristic(const Point& pos, Equipment eq)
+{
+    return std::abs(tx - pos.first) + std::abs(ty - pos.second) + (eq == 1 ? 0 : 7);
+}
+
 int main()
 {
     std::ifstream infile {"input.txt"};
@@ -89,14 +95,19 @@ int main()
 
     std::cout << "Part 1: " << risk << '\n';
 
+    // Part 2: A* search from {0, 0} to target.
     std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
+    queue.push({heuristic({0, 0}, 1),  // estimate
+                0,                     // time
+                {0, 0},                // pos
+                1});                   // equipment = torch
+
     std::unordered_map<VisitedEntry, Time> visited;
-    queue.push({0, {0, 0}, 1});  // (time, pos, equipment = torch).
-    visited[{{0, 0}, 1}] = 0;    // (pos, equipment = torch) : time.
+    visited[{{0, 0}, 1}] = 0;  // (pos, equipment = torch) : time.
 
     while (true)
     {
-        auto [time, pos, equipment] = queue.top();
+        auto [_, time, pos, equipment] = queue.top();
         queue.pop();
 
         if (pos == target && equipment == 1)
@@ -109,17 +120,20 @@ int main()
             for (auto dir : Directions)
             {
                 Point n = {pos.first + dir.first, pos.second + dir.second};
+                // Illegal position, or illegal equipment for this neighbor?
                 if (n.first < 0 || n.second < 0 || type(n) == eq)
                     continue;
+                // Been here before from a shorter path?
                 if (auto it = visited.find({n, eq});
                     it != visited.end() && it->second <= t)
                     continue;
+
                 visited[{n, eq}] = t;
-                queue.emplace(t, n, eq);
+                queue.emplace(t + heuristic(n, eq), t, n, eq);
             }
         };
 
-        next(time + 1, equipment);
-        next(time + 8, (type(pos) | equipment) ^ 0b11);
+        next(time + 1, equipment);                       // Move with same equipment.
+        next(time + 8, (type(pos) | equipment) ^ 0b11);  // Switch.
     }
 }
