@@ -1,6 +1,6 @@
 import numpy as np
 
-data = np.loadtxt('input.txt', dtype=int)
+data = np.loadtxt("input.txt", dtype=int)
 
 print("Part 1:", np.sum(data // 3 - 2))
 
