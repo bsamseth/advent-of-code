@@ -5,7 +5,7 @@ By default the current day and year is attempted. The AoC session key must be pr
 by default it is assumed to be the content of a file located in ~/.config/aocd/token.
 
 To get the session key, open the input file url when logged in to AoC and use the inspector
-to look for the cookie that was sent with the request. 
+to look for the cookie that was sent with the request.
 """
 import argparse
 import datetime
@@ -62,7 +62,7 @@ args = parser.parse_args()
 
 
 # Check path
-output = os.path.abspath(os.path.expanduser(f"aoc-{args.year}/day-{args.day}"))
+output = os.path.abspath(os.path.expanduser(f"aoc-{args.year}/day-{args.day:02d}"))
 args.session_key = os.path.abspath(os.path.expanduser(args.session_key))
 parent_dir = os.path.dirname(output)
 if not os.path.exists(parent_dir):
