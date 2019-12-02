@@ -52,7 +52,7 @@ print("Sum of numbers of pots with plants after 20 generations:", gen[20 - 1][1]
 a = gen[-1][1] - gen[-2][1]
 b = gen[-1][1] - gen[-1][0] * a
 
-large_gen = 50000000000
+large_gen = 50_000_000_000
 print(
     f"Sum of numbers of pots with plants after {large_gen} generations:",
     a * large_gen + b,

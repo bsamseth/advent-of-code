@@ -50,4 +50,3 @@ while True:
                 continue
             visited[(n, e)] = t
             heappush(queue, (t, n.real, n.imag, e))
-
