@@ -9,6 +9,7 @@ repos:
     -   id: pretty-format-json
         args: [--autofix]
     -   id: check-builtin-literals
+    -   id: flake8
 -   repo: https://github.com/ambv/black
     rev: stable
     hooks:
