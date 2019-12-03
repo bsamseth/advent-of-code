@@ -1,5 +1,4 @@
 import re
-import turtle
 
 
 def manhattan(z):
@@ -33,7 +32,7 @@ with open("input.txt") as f:
 
 intersection = p1 & p2
 
-closest_intersection = min(intersection, key=lambda x: manhattan(x))
+closest_intersection = min(intersection, key=manhattan)
 print("Part 1:", manhattan(closest_intersection))
 
 # Find the minimum sum of the steps along each path to an intersection.
