@@ -18,10 +18,28 @@ Other than the range rule, the following are true:
 
 **How many different passwords** within the range given in your puzzle input meet these criteria?
 
-Your puzzle input is `172851-675869`.
+Your puzzle answer was `1660`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+An Elf just remembered one more important detail: the two adjacent matching digits **are not part of a larger group of matching digits**.
+
+Given this additional criterion, but still ignoring the range rule, the following are now true:
+
+- `112233` meets these criteria because the digits never decrease and all repeated digits are exactly two digits long.
+- `123**444**` no longer meets the criteria (the repeated `44` is part of a larger group of `444`).
+- `111122` meets the criteria (even though `1` is repeated more than twice, it still contains a double `22`).
+
+**How many different passwords** within the range given in your puzzle input meet all of the criteria?
+
+Your puzzle answer was `1135`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2019) and try another puzzle.
+
+Your puzzle input was `172851-675869`.
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Secure+Container%22+%2D+Day+4+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F4&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Secure+Container%22+%2D+Day+4+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F4&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
