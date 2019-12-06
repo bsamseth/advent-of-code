@@ -3,74 +3,98 @@
 #include <iostream>
 #include <vector>
 
+/* Supported Intcode instructions. */
+enum class Inst
+{
+    ADD = 1,
+    MUL,
+    INP,
+    OUT,
+    JT,
+    JNT,
+    LT,
+    EQ,
+    HLT = 99
+};
+
+/* An Opcode stores the operation to execute and the associated parameter modes. */
 struct Opcode
 {
-    int op;
-    int param_a_immediate;
-    int param_b_immediate;
-    int param_c_immediate;
+    Inst op;
+    bool a_immediate;
+    bool b_immediate;
 
-    Opcode(int x)
-        : op(x % 100)
-        , param_a_immediate((x % 1000) / 100)
-        , param_b_immediate((x % 10000) / 1000)
-        , param_c_immediate(x / 10000)
+    explicit Opcode(int x)
+        : op(Inst {x % 100})
+        , a_immediate((x % 1000) / 100)
+        , b_immediate((x % 10000) / 1000)
     {
     }
 };
 
-int read_parameter(const std::vector<int>& program, int ip, int immediate = 0)
+/* Load parameter from program memory, using the appropriate mode. */
+inline int read_parameter(const std::vector<int>& program, int ip, bool immediate = true)
 {
     return immediate ? program[ip] : program[program[ip]];
 }
 
-int run_program(std::vector<int> program, int io)
+/*
+ * Execute an instruction, updating ip and io appropriately.
+ *
+ * Return is false if instruction is a halt, true otherwise.
+ */
+bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip, int& io)
+{
+    int a, b, c;
+    switch (opcode.op)
+    {
+        // Handle single parameter instructions (I/O).
+        case Inst::INP: program[program[ip++]] = io; return true;
+        case Inst::OUT:
+            io = read_parameter(program, ip++, opcode.a_immediate);
+            return true;
+
+        // Handle two-parameter instructions (conditional jumps).
+        case Inst::JT:
+        case Inst::JNT:
+            a = read_parameter(program, ip++, opcode.a_immediate);
+            b = read_parameter(program, ip++, opcode.b_immediate);
+            if ((a && opcode.op == Inst::JT) || (!a && opcode.op == Inst::JNT))
+                ip = b;
+            return true;
+
+        // Handle three-parameter instructions (e.g. c = f(a, b))
+        case Inst::ADD:
+        case Inst::MUL:
+        case Inst::LT:
+        case Inst::EQ:
+            a = read_parameter(program, ip++, opcode.a_immediate);
+            b = read_parameter(program, ip++, opcode.b_immediate);
+            c = read_parameter(program, ip++);
+            program[c] = opcode.op == Inst::ADD
+                             ? a + b
+                             : opcode.op == Inst::MUL
+                                   ? a * b
+                                   : ((a < b && opcode.op == Inst::LT)
+                                      || (a == b && opcode.op == Inst::EQ))
+                                         ? 1
+                                         : 0;
+            return true;
+        default:
+            return false;  // Halt.
+    }
+}
+
+/*
+ * Run the program with some input, returning the output.
+ *
+ * Note that the program is taken by value, so that any modifications
+ * do not affect the original program.
+ */
+inline int run_program(std::vector<int> program, int io)
 {
     int ip = 0;
-    while (true)
-    {
-        Opcode op_code {program[ip++]};
-
-        if (op_code.op == 99)
-            break;
-
-        if (op_code.op == 3)
-        {
-            program[program[ip++]] = io;
-        }
-        else if (op_code.op == 4)
-        {
-            io = read_parameter(program, ip++, op_code.param_a_immediate);
-//            std::cout << "OUTPUT: " << io << "\n";
-        }
-        else if (op_code.op == 5 || op_code.op == 6)
-        {
-            int a = read_parameter(program, ip++, op_code.param_a_immediate);
-            int b = read_parameter(program, ip++, op_code.param_b_immediate);
-            if ((a && op_code.op == 5) || (!a && op_code.op == 6))
-                ip = b;
-        }
-        else if (op_code.op == 7 || op_code.op == 8)
-        {
-            int a = read_parameter(program, ip++, op_code.param_a_immediate);
-            int b = read_parameter(program, ip++, op_code.param_b_immediate);
-            int c = read_parameter(program, ip++, 1);
-
-            program[c]
-                = ((a < b && op_code.op == 7) || (a == b && op_code.op == 8)) ? 1 : 0;
-        }
-        else
-        {
-            int a = read_parameter(program, ip++, op_code.param_a_immediate);
-            int b = read_parameter(program, ip++, op_code.param_b_immediate);
-            int c = read_parameter(program, ip++, 1);
-
-            if (op_code.op == 1)
-                program[c] = a + b;
-            else  // op_code.op == 2
-                program[c] = a * b;
-        }
-    }
+    while (execute_inst(program, Opcode {program[ip++]}, ip, io)) {}
     return io;
 }
 
@@ -87,6 +111,7 @@ int main()
         assert(comma == ',' || in_file.eof());
         program.push_back(token);
     }
+
     std::cout << "Part 1: " << run_program(program, 1) << std::endl;
     std::cout << "Part 2: " << run_program(program, 5) << std::endl;
 }
