@@ -1,3 +1,8 @@
+"""
+This could be solved in a couple of lines with networkx, but all solutions are very slow (~1 sec).
+A custom, pure Python solution is /much/ faster in this case.
+"""
+
 from collections import defaultdict
 
 
