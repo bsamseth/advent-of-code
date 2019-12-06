@@ -5,6 +5,7 @@ repos:
     -   id: check-yaml
     -   id: check-toml
     -   id: end-of-file-fixer
+        exclude: \.txt$
     -   id: trailing-whitespace
     -   id: pretty-format-json
         args: [--autofix]
