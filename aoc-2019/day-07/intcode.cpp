@@ -1,6 +1,6 @@
 #include "intcode.hpp"
 
-std::vector<int> read_program(std::string&& filename)
+std::vector<int> read_program(const std::string& filename)
 {
     std::ifstream in_file {filename};
     std::vector<int> program;
@@ -16,16 +16,21 @@ std::vector<int> read_program(std::string&& filename)
     return program;
 }
 
+/* Load parameter from program memory, using the appropriate mode. */
+static inline int read_parameter(const std::vector<int>& program, int ip, bool immediate = true)
+{
+    return immediate ? program[ip] : program[program[ip]];
+}
 
-bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip, int& io)
+bool Process::execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip)
 {
     int a, b, c;
     switch (opcode.op)
     {
         // Handle single parameter instructions (I/O).
-        case Inst::INP: program[program[ip++]] = io; return true;
+        case Inst::INP: program[program[ip++]] = get_input(); return true;
         case Inst::OUT:
-            io = read_parameter(program, ip++, opcode.a_immediate);
+            send_output(read_parameter(program, ip++, opcode.a_immediate));
             return true;
 
         // Handle two-parameter instructions (conditional jumps).
@@ -57,4 +62,68 @@ bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip, int&
         default:
             return false;  // Halt.
     }
+}
+
+
+Process::Process(const std::vector<int>& prog) : program(prog), executing(true)
+{
+    executor = std::thread{[=]()
+        {
+            int ip = 0;
+            while (execute_inst(program, Opcode{program[ip++]}, ip));
+            executing = false;
+        }
+    };
+}
+
+static void print(std::string s, const std::deque<int>& d)
+{
+    std::cout << s << ":  ";
+    for (auto e : d)
+        std::cout << e << " ";
+    std::cout << std::endl;
+}
+
+void Process::send_input(int input)
+{
+    std::lock_guard<std::mutex> guard(lock);
+    inputs.push_back(input);
+    needs_input.notify_one();
+    print("send inputs", inputs);
+}
+
+int Process::get_output()
+{
+    std::unique_lock<std::mutex> guard(lock);
+
+    needs_output.wait(guard, [=]{ return outputs.size() > 0; });
+
+    print("get output", outputs);
+
+    int value = outputs.front();
+    outputs.pop_front();
+
+    return value;
+}
+
+void Process::send_output(int output)
+{
+    std::lock_guard<std::mutex> guard(lock);
+    outputs.push_back(output);
+    needs_output.notify_one();
+    print("send outputs", outputs);
+}
+
+int Process::get_input()
+{
+    std::unique_lock<std::mutex> guard(lock);
+
+    needs_input.wait(guard, [=]{ return inputs.size() > 0; });
+
+    print("get inputs", inputs);
+
+    int value = inputs.front();
+    inputs.pop_front();
+
+    return value;
 }

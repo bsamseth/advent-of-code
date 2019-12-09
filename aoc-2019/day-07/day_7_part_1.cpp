@@ -11,15 +11,16 @@
  * Note that the program is taken by value, so that any modifications
  * do not affect the original program.
  */
-inline int run_amplifier(std::vector<int> program, int phase, int io)
+inline int run_amplifier(const std::vector<int>& program, int phase, int io)
 {
-    int ip = 0;
-    // Execute the first input instruction, with phase as IO.
-    execute_inst(program, Opcode{program[ip++]}, ip, phase);
-
-    // Now execute the remaining program with input set to io.
-    while (execute_inst(program, Opcode {program[ip++]}, ip, io)) {}
-    return io;
+    Process p {program};
+    p.send_input(phase);
+    p.send_input(io);
+    int out;
+    do
+        out = p.get_output();
+    while (p.alive() || p.output_count());
+    return out;
 }
 
 int main()
