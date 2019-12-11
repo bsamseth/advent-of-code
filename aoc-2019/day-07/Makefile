@@ -6,8 +6,11 @@ all: part1 part2
 part1:  day_7_part_1.cpp intcode.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
+part2:  day_7_part_2.cpp intcode.o
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
 intcode.o: intcode.cpp intcode.hpp
-	$(CXX) $(CXXFLAGS) -c $^
+	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
 	rm -f intcode.o part1 part2

@@ -71,25 +71,23 @@ Process::Process(const std::vector<int>& prog) : program(prog), executing(true)
         {
             int ip = 0;
             while (execute_inst(program, Opcode{program[ip++]}, ip));
-            executing = false;
         }
     };
 }
 
-static void print(std::string s, const std::deque<int>& d)
-{
-    std::cout << s << ":  ";
-    for (auto e : d)
-        std::cout << e << " ";
-    std::cout << std::endl;
-}
+/* static void print(std::string s, const std::deque<int>& d) */
+/* { */
+/*     std::cout << s << ":  "; */
+/*     for (auto e : d) */
+/*         std::cout << e << " "; */
+/*     std::cout << std::endl; */
+/* } */
 
 void Process::send_input(int input)
 {
     std::lock_guard<std::mutex> guard(lock);
     inputs.push_back(input);
     needs_input.notify_one();
-    print("send inputs", inputs);
 }
 
 int Process::get_output()
@@ -97,8 +95,6 @@ int Process::get_output()
     std::unique_lock<std::mutex> guard(lock);
 
     needs_output.wait(guard, [=]{ return outputs.size() > 0; });
-
-    print("get output", outputs);
 
     int value = outputs.front();
     outputs.pop_front();
@@ -111,7 +107,6 @@ void Process::send_output(int output)
     std::lock_guard<std::mutex> guard(lock);
     outputs.push_back(output);
     needs_output.notify_one();
-    print("send outputs", outputs);
 }
 
 int Process::get_input()
@@ -119,8 +114,6 @@ int Process::get_input()
     std::unique_lock<std::mutex> guard(lock);
 
     needs_input.wait(guard, [=]{ return inputs.size() > 0; });
-
-    print("get inputs", inputs);
 
     int value = inputs.front();
     inputs.pop_front();

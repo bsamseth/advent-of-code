@@ -44,7 +44,6 @@ class Process
 {
     private:
         std::vector<int> program;
-        bool executing;
         std::mutex lock;
         std::thread executor;
         std::condition_variable needs_input;
@@ -63,6 +62,6 @@ class Process
         void send_output(int);
         int get_input();
         int get_output();
-        int alive() { return executing; }
+        void join() { executor.join(); }
         int output_count() { return outputs.size(); }
 };

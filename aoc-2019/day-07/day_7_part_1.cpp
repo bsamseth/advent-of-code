@@ -16,10 +16,11 @@ inline int run_amplifier(const std::vector<int>& program, int phase, int io)
     Process p {program};
     p.send_input(phase);
     p.send_input(io);
+    p.join();
     int out;
     do
         out = p.get_output();
-    while (p.alive() || p.output_count());
+    while (p.output_count());
     return out;
 }
 
