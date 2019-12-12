@@ -1,9 +1,9 @@
+#include "intcode.hpp"
+
+#include <algorithm>
+#include <array>
 #include <iostream>
 #include <vector>
-#include <array>
-#include <algorithm>
-
-#include "intcode.hpp"
 
 /*
  * Run the program on an amplifier with a given phase and input, returning the output.
@@ -13,15 +13,14 @@
  */
 inline int run_amplifier(const std::vector<int>& program, int phase, int io)
 {
-    Process p {program};
-    p.send_input(phase);
-    p.send_input(io);
+    auto inputs = std::make_shared<IOQueue<int>>();
+    auto outputs = std::make_shared<IOQueue<int>>();
+    inputs->push(phase);
+    inputs->push(io);
+
+    Process p {program, inputs, outputs};
     p.join();
-    int out;
-    do
-        out = p.get_output();
-    while (p.output_count());
-    return out;
+    return outputs->get_data().back();
 }
 
 int main()
@@ -30,13 +29,13 @@ int main()
 
     int best = 0;
     std::array<int, 5> phases = {0, 1, 2, 3, 4};
-    do {
+    do
+    {
         int io = 0;
         for (int p : phases)
             io = run_amplifier(program, p, io);
         best = std::max(best, io);
-    }
-    while (std::next_permutation(phases.begin(), phases.end()));
+    } while (std::next_permutation(phases.begin(), phases.end()));
 
     std::cout << "Part 1: " << best << std::endl;
 }

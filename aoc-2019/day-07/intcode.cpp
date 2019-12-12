@@ -17,7 +17,8 @@ std::vector<int> read_program(const std::string& filename)
 }
 
 /* Load parameter from program memory, using the appropriate mode. */
-static inline int read_parameter(const std::vector<int>& program, int ip, bool immediate = true)
+static inline int
+    read_parameter(const std::vector<int>& program, int ip, bool immediate = true)
 {
     return immediate ? program[ip] : program[program[ip]];
 }
@@ -28,9 +29,9 @@ bool Process::execute_inst(std::vector<int>& program, const Opcode& opcode, int&
     switch (opcode.op)
     {
         // Handle single parameter instructions (I/O).
-        case Inst::INP: program[program[ip++]] = get_input(); return true;
+        case Inst::INP: program[program[ip++]] = inputs->pop(); return true;
         case Inst::OUT:
-            send_output(read_parameter(program, ip++, opcode.a_immediate));
+            outputs->push(read_parameter(program, ip++, opcode.a_immediate));
             return true;
 
         // Handle two-parameter instructions (conditional jumps).
@@ -59,20 +60,20 @@ bool Process::execute_inst(std::vector<int>& program, const Opcode& opcode, int&
                                          ? 1
                                          : 0;
             return true;
-        default:
-            return false;  // Halt.
+        default: return false;  // Halt.
     }
 }
 
-
-Process::Process(const std::vector<int>& prog) : program(prog), executing(true)
+Process::Process(const std::vector<int>& prog,
+                 std::shared_ptr<IOQueue<int>> in,
+                 std::shared_ptr<IOQueue<int>> out)
+    : program(prog), inputs(in), outputs(out)
 {
-    executor = std::thread{[=]()
-        {
-            int ip = 0;
-            while (execute_inst(program, Opcode{program[ip++]}, ip));
-        }
-    };
+    executor = std::thread {[=]() {
+        int ip = 0;
+        while (execute_inst(program, Opcode {program[ip++]}, ip))
+            ;
+    }};
 }
 
 /* static void print(std::string s, const std::deque<int>& d) */
@@ -82,41 +83,3 @@ Process::Process(const std::vector<int>& prog) : program(prog), executing(true)
 /*         std::cout << e << " "; */
 /*     std::cout << std::endl; */
 /* } */
-
-void Process::send_input(int input)
-{
-    std::lock_guard<std::mutex> guard(lock);
-    inputs.push_back(input);
-    needs_input.notify_one();
-}
-
-int Process::get_output()
-{
-    std::unique_lock<std::mutex> guard(lock);
-
-    needs_output.wait(guard, [=]{ return outputs.size() > 0; });
-
-    int value = outputs.front();
-    outputs.pop_front();
-
-    return value;
-}
-
-void Process::send_output(int output)
-{
-    std::lock_guard<std::mutex> guard(lock);
-    outputs.push_back(output);
-    needs_output.notify_one();
-}
-
-int Process::get_input()
-{
-    std::unique_lock<std::mutex> guard(lock);
-
-    needs_input.wait(guard, [=]{ return inputs.size() > 0; });
-
-    int value = inputs.front();
-    inputs.pop_front();
-
-    return value;
-}

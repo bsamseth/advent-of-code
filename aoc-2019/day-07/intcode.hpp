@@ -1,11 +1,11 @@
 #include <cassert>
+#include <condition_variable>
+#include <deque>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <mutex>
-#include <condition_variable>
 #include <thread>
-#include <deque>
+#include <vector>
 
 /* Supported Intcode instructions. */
 enum class Inst
@@ -36,32 +36,53 @@ struct Opcode
     }
 };
 
-
 /* Read a program from file, return as a vector of intcodes. */
 std::vector<int> read_program(const std::string& filename);
 
+template <typename Data>
+class IOQueue
+{
+private:
+    std::mutex lock;
+    std::condition_variable waiting;
+    std::deque<Data> data;
+
+public:
+    Data pop()
+    {
+        std::unique_lock<std::mutex> guard(lock);
+        waiting.wait(guard, [=] { return data.size() > 0; });
+        Data value = data.front();
+        data.pop_front();
+        return value;
+    }
+    void push(Data d)
+    {
+        std::lock_guard<std::mutex> guard(lock);
+        data.push_back(d);
+        waiting.notify_one();
+    }
+    auto size() const { return data.size(); }
+    const std::deque<Data>& get_data() const { return data; }
+};
+
 class Process
 {
-    private:
-        std::vector<int> program;
-        std::mutex lock;
-        std::thread executor;
-        std::condition_variable needs_input;
-        std::condition_variable needs_output;
+private:
+    std::vector<int> program;
+    std::shared_ptr<IOQueue<int>> inputs;
+    std::shared_ptr<IOQueue<int>> outputs;
+    std::thread executor;
+    bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip);
 
-        std::deque<int> inputs;
-        std::deque<int> outputs;
+public:
+    Process(const std::string& filename) : Process(read_program(filename)) {}
+    Process(const std::vector<int>& prog) : Process(prog, nullptr, nullptr) {}
 
-        bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip);
+    Process(const std::vector<int>& prog,
+            std::shared_ptr<IOQueue<int>> inputs,
+            std::shared_ptr<IOQueue<int>> outputs);
 
-    public:
-        Process(const std::string& filename) : Process(read_program(filename)) {}
-        Process(const std::vector<int>& prog);
-
-        void send_input(int);
-        void send_output(int);
-        int get_input();
-        int get_output();
-        void join() { executor.join(); }
-        int output_count() { return outputs.size(); }
+    void join() { executor.join(); }
+    int output_count() { return outputs->size(); }
 };

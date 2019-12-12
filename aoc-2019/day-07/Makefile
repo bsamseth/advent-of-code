@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++17 -Wall -Wextra -Werror -pthread
+CXXFLAGS=-std=c++17 -Wall -Wextra -pthread
 
 all: part1 part2
 
