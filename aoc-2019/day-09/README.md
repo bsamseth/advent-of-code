@@ -38,10 +38,26 @@ The BOOST program will ask for a single input; run it in test mode by providing 
 
 Once your Intcode computer is fully functional, the BOOST program should report no malfunctioning opcodes when run in test mode; it should only output a single value, the BOOST keycode. **What BOOST keycode does it produce?**
 
-To begin, [get your puzzle input](9/input).
+Your puzzle answer was `2399197539`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+**You now have a complete Intcode computer.**
+
+Finally, you can lock on to the Ceres distress signal! You just need to boost your sensors using the BOOST program.
+
+The program runs in sensor boost mode by providing the input instruction the value `2`.  Once run, it will boost the sensors automatically, but it might take a few seconds to complete the operation on slower hardware.  In sensor boost mode, the program will output a single value: **the coordinates of the distress signal**.
+
+Run the BOOST program in sensor boost mode.  **What are the coordinates of the distress signal?**
+
+Your puzzle answer was `35106`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2019) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](9/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Sensor+Boost%22+%2D+Day+9+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F9&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Sensor+Boost%22+%2D+Day+9+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F9&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
