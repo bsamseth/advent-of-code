@@ -1,18 +1,13 @@
 CXX=g++
 CXXFLAGS=-std=c++17 -Wall -Wextra -pthread
 
-all: part1 part2
-
-part1:  day_7_part_1.cpp intcode.o
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-part2:  day_7_part_2.cpp intcode.o
+day_7:  day_7.cpp intcode.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 intcode.o: intcode.cpp intcode.hpp
 	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
-	rm -f intcode.o part1 part2
+	rm -f intcode.o day_7
 
 .PHONY: clean

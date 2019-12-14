@@ -41,7 +41,9 @@ int run_amplifier_with_feedback(const std::vector<int> &program,
 
 int main() {
     auto program = read_program("input.txt");
+    assert(program.size() && "Could not read program from file.");
 
+    // Part 1.
     {
         int best = 0;
         std::array<int, 5> phases = {0, 1, 2, 3, 4};
@@ -55,11 +57,11 @@ int main() {
         std::cout << "Part 1: " << best << std::endl;
     }
 
+    // Part 2.
     {
         int best = 0;
         std::vector<int> phases = {5, 6, 7, 8, 9};
-        do
-        {
+        do {
             best = std::max(best, run_amplifier_with_feedback(program, phases));
         } while (std::next_permutation(phases.begin(), phases.end()));
 
