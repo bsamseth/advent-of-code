@@ -1,5 +1,7 @@
 #include "intcode.hpp"
 
+#include <utility>
+
 std::vector<int> read_program(const std::string& filename)
 {
     std::ifstream in_file {filename};
@@ -23,7 +25,7 @@ static inline int
     return immediate ? program[ip] : program[program[ip]];
 }
 
-bool Process::execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip)
+bool Process::execute_inst(const Opcode& opcode, int& ip)
 {
     int a, b, c;
     switch (opcode.op)
@@ -64,14 +66,14 @@ bool Process::execute_inst(std::vector<int>& program, const Opcode& opcode, int&
     }
 }
 
-Process::Process(const std::vector<int>& prog,
+Process::Process(std::vector<int> prog,
                  std::shared_ptr<IOQueue<int>> in,
                  std::shared_ptr<IOQueue<int>> out)
-    : program(prog), inputs(in), outputs(out)
+    : program(std::move(prog)), inputs(std::move(in)), outputs(std::move(out))
 {
     executor = std::thread {[=]() {
         int ip = 0;
-        while (execute_inst(program, Opcode {program[ip++]}, ip))
+        while (execute_inst(Opcode {program[ip++]}, ip))
             ;
     }};
 }

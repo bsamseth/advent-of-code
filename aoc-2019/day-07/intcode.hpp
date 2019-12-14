@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cassert>
 #include <condition_variable>
 #include <deque>
@@ -62,8 +64,8 @@ public:
         data.push_back(d);
         waiting.notify_one();
     }
-    auto size() const { return data.size(); }
-    const std::deque<Data>& get_data() const { return data; }
+    [[nodiscard]] auto size() const noexcept { return data.size(); }
+    [[nodiscard]] const auto& get_data() const noexcept { return data; }
 };
 
 class Process
@@ -73,16 +75,15 @@ private:
     std::shared_ptr<IOQueue<int>> inputs;
     std::shared_ptr<IOQueue<int>> outputs;
     std::thread executor;
-    bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip);
+    bool execute_inst(const Opcode& opcode, int& ip);
 
 public:
-    Process(const std::string& filename) : Process(read_program(filename)) {}
-    Process(const std::vector<int>& prog) : Process(prog, nullptr, nullptr) {}
+    explicit Process(const std::string& filename) : Process(read_program(filename)) {}
+    explicit Process(const std::vector<int>& prog) : Process(prog, nullptr, nullptr) {}
 
-    Process(const std::vector<int>& prog,
+    Process(std::vector<int> prog,
             std::shared_ptr<IOQueue<int>> inputs,
             std::shared_ptr<IOQueue<int>> outputs);
 
     void join() { executor.join(); }
-    int output_count() { return outputs->size(); }
 };
