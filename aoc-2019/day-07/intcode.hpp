@@ -10,8 +10,7 @@
 #include <vector>
 
 /* Supported Intcode instructions. */
-enum class Inst
-{
+enum class Inst {
     ADD = 1,
     MUL,
     INP,
@@ -24,64 +23,65 @@ enum class Inst
 };
 
 /* An Opcode stores the operation to execute and the associated parameter modes. */
-struct Opcode
-{
+struct Opcode {
     Inst op;
     bool a_immediate;
     bool b_immediate;
 
     explicit Opcode(int x)
-        : op(Inst {x % 100})
-        , a_immediate((x % 1000) / 100)
-        , b_immediate((x % 10000) / 1000)
-    {
+            : op(Inst{x % 100}), a_immediate((x % 1000) / 100), b_immediate((x % 10000) / 1000) {
     }
 };
 
 /* Read a program from file, return as a vector of intcodes. */
-std::vector<int> read_program(const std::string& filename);
+std::vector<int> read_program(const std::string &filename);
 
-template <typename Data>
-class IOQueue
-{
+template<typename Data>
+class IOQueue {
 private:
     std::mutex lock;
     std::condition_variable waiting;
     std::deque<Data> data;
 
 public:
-    Data pop()
-    {
+    Data pop() {
         std::unique_lock<std::mutex> guard(lock);
         waiting.wait(guard, [=] { return data.size() > 0; });
         Data value = data.front();
         data.pop_front();
         return value;
     }
-    void push(Data d)
-    {
+
+    void push(Data d) {
         std::lock_guard<std::mutex> guard(lock);
         data.push_back(d);
         waiting.notify_one();
     }
+
     [[nodiscard]] auto size() const noexcept { return data.size(); }
-    [[nodiscard]] const auto& get_data() const noexcept { return data; }
+
+    [[nodiscard]] const auto &get_data() const noexcept { return data; }
 };
 
-class Process
-{
+class Process {
 private:
     std::vector<int> program;
     std::shared_ptr<IOQueue<int>> inputs;
     std::shared_ptr<IOQueue<int>> outputs;
     std::thread executor;
-    bool execute_inst(const Opcode& opcode, int& ip);
+
+    bool execute_inst(const Opcode &opcode, int &ip);
 
 public:
-    explicit Process(const std::string& filename) : Process(read_program(filename)) {}
-    explicit Process(const std::vector<int>& prog) : Process(prog, nullptr, nullptr) {}
+    explicit Process(const std::string &filename) : Process(read_program(filename)) {}
 
-    Process(std::vector<int> prog,
+    explicit Process(const std::vector<int> &program)
+            : Process(program,
+                      std::make_shared<IOQueue<int>>(),
+                      std::make_shared<IOQueue<int>>()) {
+    }
+
+    Process(std::vector<int> program,
             std::shared_ptr<IOQueue<int>> inputs,
             std::shared_ptr<IOQueue<int>> outputs);
 

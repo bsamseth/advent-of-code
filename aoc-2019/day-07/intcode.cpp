@@ -77,11 +77,3 @@ Process::Process(std::vector<int> prog,
             ;
     }};
 }
-
-/* static void print(std::string s, const std::deque<int>& d) */
-/* { */
-/*     std::cout << s << ":  "; */
-/*     for (auto e : d) */
-/*         std::cout << e << " "; */
-/*     std::cout << std::endl; */
-/* } */
