@@ -11,7 +11,7 @@ repos:
         args: [--autofix]
     -   id: check-builtin-literals
     -   id: flake8
-        args: [--max-line-length=100]
+        args: [--max-line-length=120]
 -   repo: https://github.com/ambv/black
     rev: stable
     hooks:
