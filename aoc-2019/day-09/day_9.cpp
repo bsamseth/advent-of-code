@@ -11,7 +11,7 @@ int main() {
         auto inputs = std::make_shared<IOQueue<cpp_int>>();
         auto outputs = std::make_shared<IOQueue<cpp_int>>();
         inputs->push(part);
-        Process p{read_program("input.txt"), inputs, outputs};
+        Process<cpp_int> p{read_program<cpp_int>("input.txt"), inputs, outputs};
         p.join();
         std::cout << "Part " << part << ": " << outputs->get_data().back() << std::endl;
     }
