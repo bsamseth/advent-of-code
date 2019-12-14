@@ -16,14 +16,6 @@ std::vector<cpp_int> read_program(const std::string& filename) {
     return program;
 }
 
-cpp_int Process::load(const cpp_int& ip) const {
-    return memory.at(ip);
-}
-
-void Process::store(const cpp_int& addr, const cpp_int& value) {
-    memory[addr] = value;
-};
-
 static inline auto read_memory(const std::map<cpp_int, cpp_int>& memory, const cpp_int& where) {
     auto it = memory.find(where);
     if (it == memory.end())
@@ -49,9 +41,8 @@ bool Process::execute_inst(const Opcode& opcode, cpp_int& ip) {
     switch (opcode.op) {
         // Handle single parameter instructions (I/O).
         case Inst::INP:
-            store(read_memory(memory, ip++)
-                  + (opcode.a_mode == ParameterMode::POSITION ? 0 : relative_base),
-                  inputs->pop());
+            memory[read_memory(memory, ip++) +
+                   (opcode.a_mode == ParameterMode::POSITION ? 0 : relative_base)] = inputs->pop();
             return true;
         case Inst::OUT:
             outputs->push(read_parameter(memory, ip++, opcode.a_mode, relative_base));
@@ -77,14 +68,15 @@ bool Process::execute_inst(const Opcode& opcode, cpp_int& ip) {
             a = read_parameter(memory, ip++, opcode.a_mode, relative_base);
             b = read_parameter(memory, ip++, opcode.b_mode, relative_base);
             c = read_parameter(memory, ip++);
-            store(c + (opcode.c_mode == ParameterMode::RELATIVE ? relative_base : 0), opcode.op == Inst::ADD
-                     ? a + b
-                     : opcode.op == Inst::MUL
-                       ? a * b
-                       : ((a < b && opcode.op == Inst::LT)
-                          || (a == b && opcode.op == Inst::EQ))
-                         ? cpp_int{1}
-                         : cpp_int{0});
+            memory[c + (opcode.c_mode == ParameterMode::RELATIVE ? relative_base : 0)] =
+                    opcode.op == Inst::ADD
+                    ? a + b
+                    : opcode.op == Inst::MUL
+                      ? a * b
+                      : ((a < b && opcode.op == Inst::LT)
+                         || (a == b && opcode.op == Inst::EQ))
+                        ? cpp_int{1}
+                        : cpp_int{0};
             return true;
         default:
             return false;  // Halt.
@@ -97,11 +89,8 @@ Process::Process(std::vector<cpp_int> program,
         : inputs(std::move(in)), outputs(std::move(out)) {
 
     // Load the program into memory.
-    for (int i = 0; i < (int) program.size(); ++i) {
-        store(i, program[i]);
-//        std::cout << load(i) << " ";
-    }
-//    std::cout << "read in" << std::endl;
+    for (int i = 0; i < (int) program.size(); ++i)
+        memory[i] = program[i];
 
     executor = std::thread{[=]() {
         cpp_int ip = 0;

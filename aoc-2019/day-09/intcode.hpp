@@ -42,7 +42,7 @@ struct Opcode {
             : op(Inst{(int) x % 100}),
               a_mode(ParameterMode{(int) (x / 100) % 10}),
               b_mode(ParameterMode{(int) (x / 1000) % 10}),
-              c_mode(ParameterMode{(int) (x / 10000) % 10}){
+              c_mode(ParameterMode{(int) (x / 10000) % 10}) {
     }
 };
 
@@ -86,10 +86,6 @@ private:
 
     bool execute_inst(const Opcode& opcode, cpp_int& ip);
 
-    cpp_int load(const cpp_int& ip) const;
-
-    void store(const cpp_int& addr, const cpp_int& value);
-
 public:
     explicit Process(const std::string& filename) : Process(read_program(filename)) {}
 
@@ -106,5 +102,6 @@ public:
     void join() { executor.join(); }
 
     [[nodiscard]] const auto& get_inputs() const noexcept { return inputs; }
+
     [[nodiscard]] const auto& get_outputs() const noexcept { return outputs; }
 };
