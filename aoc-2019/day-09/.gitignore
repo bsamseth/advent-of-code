@@ -1,3 +1,3 @@
-day_9
+day_7
 *.o
-cmake-build-debug
+cmake-build-*

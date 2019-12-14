@@ -3,11 +3,15 @@
 #include <cassert>
 #include <condition_variable>
 #include <deque>
+#include <map>
 #include <fstream>
 #include <iostream>
 #include <mutex>
 #include <thread>
 #include <vector>
+#include <boost/multiprecision/cpp_int.hpp>
+
+using boost::multiprecision::cpp_int;
 
 /* Supported Intcode instructions. */
 enum class Inst {
@@ -19,22 +23,31 @@ enum class Inst {
     JNT,
     LT,
     EQ,
+    ARB,  // Add to relative base.
     HLT = 99
+};
+
+enum class ParameterMode {
+    POSITION = 0, IMMEDIATE, RELATIVE
 };
 
 /* An Opcode stores the operation to execute and the associated parameter modes. */
 struct Opcode {
     Inst op;
-    bool a_immediate;
-    bool b_immediate;
+    ParameterMode a_mode;
+    ParameterMode b_mode;
+    ParameterMode c_mode;
 
-    explicit Opcode(int x)
-            : op(Inst{x % 100}), a_immediate((x % 1000) / 100), b_immediate((x % 10000) / 1000) {
+    explicit Opcode(cpp_int x)
+            : op(Inst{(int) x % 100}),
+              a_mode(ParameterMode{(int) (x / 100) % 10}),
+              b_mode(ParameterMode{(int) (x / 1000) % 10}),
+              c_mode(ParameterMode{(int) (x / 10000) % 10}){
     }
 };
 
 /* Read a program from file, return as a vector of intcodes. */
-std::vector<int> read_program(const std::string &filename);
+std::vector<cpp_int> read_program(const std::string& filename);
 
 template<typename Data>
 class IOQueue {
@@ -60,30 +73,38 @@ public:
 
     [[nodiscard]] auto size() const noexcept { return data.size(); }
 
-    [[nodiscard]] const auto &get_data() const noexcept { return data; }
+    [[nodiscard]] const auto& get_data() const noexcept { return data; }
 };
 
 class Process {
 private:
-    std::vector<int> program;
-    std::shared_ptr<IOQueue<int>> inputs;
-    std::shared_ptr<IOQueue<int>> outputs;
+    cpp_int relative_base = 0;
+    std::map<cpp_int, cpp_int> memory;
+    std::shared_ptr<IOQueue<cpp_int>> inputs;
+    std::shared_ptr<IOQueue<cpp_int>> outputs;
     std::thread executor;
 
-    bool execute_inst(const Opcode &opcode, int &ip);
+    bool execute_inst(const Opcode& opcode, cpp_int& ip);
+
+    cpp_int load(const cpp_int& ip) const;
+
+    void store(const cpp_int& addr, const cpp_int& value);
 
 public:
-    explicit Process(const std::string &filename) : Process(read_program(filename)) {}
+    explicit Process(const std::string& filename) : Process(read_program(filename)) {}
 
-    explicit Process(const std::vector<int> &program)
+    explicit Process(const std::vector<cpp_int>& program)
             : Process(program,
-                      std::make_shared<IOQueue<int>>(),
-                      std::make_shared<IOQueue<int>>()) {
+                      std::make_shared<IOQueue<cpp_int>>(),
+                      std::make_shared<IOQueue<cpp_int>>()) {
     }
 
-    Process(std::vector<int> program,
-            std::shared_ptr<IOQueue<int>> inputs,
-            std::shared_ptr<IOQueue<int>> outputs);
+    Process(std::vector<cpp_int> program,
+            std::shared_ptr<IOQueue<cpp_int>> inputs,
+            std::shared_ptr<IOQueue<cpp_int>> outputs);
 
     void join() { executor.join(); }
+
+    [[nodiscard]] const auto& get_inputs() const noexcept { return inputs; }
+    [[nodiscard]] const auto& get_outputs() const noexcept { return outputs; }
 };
