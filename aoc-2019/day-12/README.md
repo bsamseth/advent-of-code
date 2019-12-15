@@ -198,10 +198,65 @@ Sum of total energy: 290 + 608 + 574 + 468 = **1940**
 
 **What is the total energy in the system** after simulating the moons given in your scan for `1000` steps?
 
-To begin, [get your puzzle input](12/input).
+Your puzzle answer was `11384`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+All this drifting around in space makes you wonder about the nature of the universe.  Does history really repeat itself?  You're curious whether the moons will ever return to a previous state.
+
+Determine **the number of steps** that must occur before all of the moons' **positions and velocities** exactly match a previous point in time.
+
+For example, the first example above takes `2772` steps before they exactly match a previous point in time; it eventually returns to the initial state:
+
+```
+After 0 steps:
+pos=&lt;x= -1, y=  0, z=  2&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+pos=&lt;x=  2, y=-10, z= -7&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+pos=&lt;x=  4, y= -8, z=  8&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+pos=&lt;x=  3, y=  5, z= -1&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+
+After 2770 steps:
+pos=&lt;x=  2, y= -1, z=  1&gt;, vel=&lt;x= -3, y=  2, z=  2&gt;
+pos=&lt;x=  3, y= -7, z= -4&gt;, vel=&lt;x=  2, y= -5, z= -6&gt;
+pos=&lt;x=  1, y= -7, z=  5&gt;, vel=&lt;x=  0, y= -3, z=  6&gt;
+pos=&lt;x=  2, y=  2, z=  0&gt;, vel=&lt;x=  1, y=  6, z= -2&gt;
+
+After 2771 steps:
+pos=&lt;x= -1, y=  0, z=  2&gt;, vel=&lt;x= -3, y=  1, z=  1&gt;
+pos=&lt;x=  2, y=-10, z= -7&gt;, vel=&lt;x= -1, y= -3, z= -3&gt;
+pos=&lt;x=  4, y= -8, z=  8&gt;, vel=&lt;x=  3, y= -1, z=  3&gt;
+pos=&lt;x=  3, y=  5, z= -1&gt;, vel=&lt;x=  1, y=  3, z= -1&gt;
+
+After 2772 steps:
+pos=&lt;x= -1, y=  0, z=  2&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+pos=&lt;x=  2, y=-10, z= -7&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+pos=&lt;x=  4, y= -8, z=  8&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+pos=&lt;x=  3, y=  5, z= -1&gt;, vel=&lt;x=  0, y=  0, z=  0&gt;
+
+```
+
+Of course, the universe might last for a **very long time** before repeating.  Here's a copy of the second example from above:
+
+```
+&lt;x=-8, y=-10, z=0&gt;
+&lt;x=5, y=5, z=10&gt;
+&lt;x=2, y=-7, z=3&gt;
+&lt;x=9, y=-8, z=-3&gt;
+
+```
+
+This set of initial positions takes `4686774924` steps before it repeats a previous state! Clearly, you might need to **find a more efficient way to simulate the universe**.
+
+**How many steps does it take** to reach the first state that exactly matches a previous state?
+
+Your puzzle answer was `452582583272768`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2019) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](12/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22The+N%2DBody+Problem%22+%2D+Day+12+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F12&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22The+N%2DBody+Problem%22+%2D+Day+12+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F12&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
