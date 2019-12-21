@@ -95,10 +95,28 @@ Here are some larger examples:
 
 Given the list of reactions in your puzzle input, **what is the minimum amount of `ORE` required to produce exactly 1 `FUEL`?**
 
-To begin, [get your puzzle input](14/input).
+Your puzzle answer was `273638`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+After collecting `ORE` for a while, you check your cargo hold: **1 trillion** (**1000000000000**) units of `ORE`.
+
+**With that much ore**, given the examples above:
+
+- The 13312 `ORE`-per-`FUEL` example could produce **82892753** `FUEL`.
+- The 180697 `ORE`-per-`FUEL` example could produce **5586022** `FUEL`.
+- The 2210736 `ORE`-per-`FUEL` example could produce **460664** `FUEL`.
+
+Given 1 trillion `ORE`, **what is the maximum amount of `FUEL` you can produce?**
+
+Your puzzle answer was `4200533`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2019) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](14/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Space+Stoichiometry%22+%2D+Day+14+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F14&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Space+Stoichiometry%22+%2D+Day+14+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F14&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
