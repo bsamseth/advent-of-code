@@ -17,10 +17,30 @@ For example, a sequence of output values like `1,2,3,6,5,4` would draw a **horiz
 
 Start the game. **How many block tiles are on the screen when the game exits?**
 
-To begin, [get your puzzle input](13/input).
+Your puzzle answer was `268`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+The game didn't run because you didn't put in any quarters. Unfortunately, you did not bring any quarters. Memory address `0` represents the number of quarters that have been inserted; set it to `2` to play for free.
+
+The arcade cabinet has a [joystick](https://en.wikipedia.org/wiki/Joystick) that can move left and right.  The software reads the position of the joystick with input instructions:
+
+- If the joystick is in the **neutral position**, provide `0`.
+- If the joystick is **tilted to the left**, provide `-1`.
+- If the joystick is **tilted to the right**, provide `1`.
+
+The arcade cabinet also has a [segment display](https://en.wikipedia.org/wiki/Display_device#Segment_displays) capable of showing a single number that represents the player's current score. When three output instructions specify `X=-1, Y=0`, the third output instruction is not a tile; the value instead specifies the new score to show in the segment display.  For example, a sequence of output values like `-1,0,12345` would show `12345` as the player's current score.
+
+Beat the game by breaking all the blocks. **What is your score after the last block is broken?**
+
+Your puzzle answer was `13989`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2019) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](13/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Care+Package%22+%2D+Day+13+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F13&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Care+Package%22+%2D+Day+13+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F13&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
