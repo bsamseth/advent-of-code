@@ -136,6 +136,7 @@ template<typename Data>
 class Process {
 private:
     std::atomic<bool> dead = false;
+    std::atomic<bool> death_requested = false;
     Data relative_base = Data{0};
     std::map<Data, Data> memory;
     std::shared_ptr<IOQueue<Data>> inputs;
@@ -210,14 +211,18 @@ public:
 
         executor = std::thread{[=]() {
             Data ip = 0;
-            while (execute_inst(Opcode{read_memory(memory, ip++)}, ip));
+            while (!death_requested.load() && execute_inst(Opcode{read_memory(memory, ip++)}, ip));
             dead.store(true);
             outputs->notify_all();
         }};
     }
 
 
-    void join() { executor.join(); }
+    void join() {
+        death_requested.store(true);
+        inputs->push({0});
+        executor.join();
+    }
 
     [[nodiscard]] constexpr bool alive() const noexcept { return !dead.load(); }
 
