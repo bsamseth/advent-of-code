@@ -39,7 +39,7 @@ struct Opcode {
     ParameterMode c_mode;
 
     explicit Opcode(Data x)
-            : op(Inst{(int) x % 100}),
+            : op(Inst{static_cast<int>(x) % 100}),
               a_mode(ParameterMode{(int) (x / 100) % 10}),
               b_mode(ParameterMode{(int) (x / 1000) % 10}),
               c_mode(ParameterMode{(int) (x / 10000) % 10}) {
@@ -51,6 +51,7 @@ template<typename Data>
 std::vector<Data> read_program(const std::string& filename) {
     std::ifstream in_file{filename};
     std::vector<Data> program;
+    assert(in_file.good() && "Could not load the program file, check your working directory.");
     while (in_file.good()) {
         char comma;
         Data token;
@@ -222,5 +223,9 @@ public:
 
     [[nodiscard]] const auto& get_inputs() const noexcept { return inputs; }
 
+    [[nodiscard]] auto get_inputs() noexcept { return inputs; }
+
     [[nodiscard]] const auto& get_outputs() const noexcept { return outputs; }
+
+    [[nodiscard]] auto get_outputs() noexcept { return outputs; }
 };

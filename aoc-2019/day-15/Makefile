@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++17 -Wall -Wextra -pthread -O3
+CXXFLAGS=-std=c++2a -Wall -Wextra -pthread -O3
 
 day_15:  day_15.cpp intcode.hpp
 	$(CXX) $(CXXFLAGS) $< -o $@
