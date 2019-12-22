@@ -5,23 +5,27 @@
 #include <iostream>
 #include <vector>
 
-/* Run the program on an amplifier with a given phase and input, returning the output. */
-inline int run_amplifier(const std::vector<int> &program, int phase, int io) {
+/* Run the program on an amplifier with a given phase and input, returning the output.
+ */
+inline int run_amplifier(const std::vector<int>& program, int phase, int io)
+{
     auto inputs = std::make_shared<IOQueue<int>>();
     auto outputs = std::make_shared<IOQueue<int>>();
     inputs->push(phase);
     inputs->push(io);
 
-    Process p{program, inputs, outputs};
+    Process p {program, inputs, outputs};
     p.join();
     return outputs->get_data().back();
 }
 
-int run_amplifier_with_feedback(const std::vector<int> &program,
-                                const std::vector<int> &phases) {
+int run_amplifier_with_feedback(const std::vector<int>& program,
+                                const std::vector<int>& phases)
+{
     std::vector<std::shared_ptr<IOQueue<int>>> queues;
     queues.reserve(5);
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i)
+    {
         queues.push_back(std::make_shared<IOQueue<int>>());
         queues.back()->push(phases[i]);
     }
@@ -33,13 +37,14 @@ int run_amplifier_with_feedback(const std::vector<int> &program,
 
     queues[0]->push(0);
 
-    for (auto &proc : procs)
+    for (auto& proc : procs)
         proc.join();
 
     return queues[0]->pop();
 }
 
-int main() {
+int main()
+{
     auto program = read_program("input.txt");
     assert(program.size() && "Could not read program from file.");
 
@@ -47,7 +52,8 @@ int main() {
     {
         int best = 0;
         std::array<int, 5> phases = {0, 1, 2, 3, 4};
-        do {
+        do
+        {
             int io = 0;
             for (int p : phases)
                 io = run_amplifier(program, p, io);
@@ -61,7 +67,8 @@ int main() {
     {
         int best = 0;
         std::vector<int> phases = {5, 6, 7, 8, 9};
-        do {
+        do
+        {
             best = std::max(best, run_amplifier_with_feedback(program, phases));
         } while (std::next_permutation(phases.begin(), phases.end()));
 

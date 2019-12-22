@@ -33,7 +33,8 @@ struct Opcode
 };
 
 /* Load parameter from program memory, using the appropriate mode. */
-inline int read_parameter(const std::vector<int>& program, int ip, bool immediate = true)
+inline int
+    read_parameter(const std::vector<int>& program, int ip, bool immediate = true)
 {
     return immediate ? program[ip] : program[program[ip]];
 }
@@ -80,8 +81,7 @@ bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip, int&
                                          ? 1
                                          : 0;
             return true;
-        default:
-            return false;  // Halt.
+        default: return false;  // Halt.
     }
 }
 
@@ -94,7 +94,9 @@ bool execute_inst(std::vector<int>& program, const Opcode& opcode, int& ip, int&
 inline int run_program(std::vector<int> program, int io)
 {
     int ip = 0;
-    while (execute_inst(program, Opcode {program[ip++]}, ip, io)) {}
+    while (execute_inst(program, Opcode {program[ip++]}, ip, io))
+    {
+    }
     return io;
 }
 
