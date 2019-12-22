@@ -6,7 +6,7 @@
 #include <set>
 #include <boost/multiprecision/cpp_int.hpp>
 
-using Data = boost::multiprecision::cpp_int;
+using Data = int;//boost::multiprecision::cpp_int;
 using Point = std::pair<Data, Data>;
 
 enum Status {
@@ -35,101 +35,61 @@ constexpr Direction operator~(const Direction d) {
     }
 }
 
-
-template<bool Reverse, typename It>
-auto do_walk(Process<Data>& droid, It begin, It end) {
-    auto command_stream = droid.get_inputs();
-    auto status_stream = droid.get_outputs();
-
-    std::pair<int, int> point {0, 0};
-
-    Status s = Status::WALL;
-    for (It it = begin; it != end; ++it) {
-        Direction d = Reverse ? ~(*it) : *it;
-
-        switch (d) {
-            case Direction::NORTH: point.second += 1; break;
-            case Direction::SOUTH: point.second -= 1; break;
-            case Direction::WEST: point.first -= 1; break;
-            case Direction::EAST: point.first += 1; break;
-        }
-
-        command_stream->push(Data{(int) d});
-        s = static_cast<Status>((int) status_stream->pop());
+constexpr void update_position(std::pair<int, int>& point, Direction d) {
+    switch (d) {
+        case Direction::NORTH:
+            point.second += 1;
+            return;
+        case Direction::SOUTH:
+            point.second -= 1;
+            return;
+        case Direction::WEST:
+            point.first -= 1;
+            return;
+        case Direction::EAST:
+            point.first += 1;
+            return;
     }
-    return std::pair<Status, std::pair<int, int>> {s, point};
 }
 
-inline auto forward(Process<Data>& droid, const Path& path) {
-    return do_walk<false>(droid, path.begin(), path.end());
-}
+std::pair<bool, int>
+find_oxygen_dfs(Process<Data>& droid, std::set<std::pair<int, int>>& seen, std::pair<int, int> position,
+                int steps_so_far) {
 
-inline auto reverse(Process<Data>& droid, const Path& path) {
-    return do_walk<true>(droid, path.rbegin(), path.rend());
-}
+    if (seen.count(position))
+        return {false, steps_so_far};
 
-Path find_oxygen(Process<Data>& droid) {
-    std::deque<Path> paths;
-    for (Direction dir : directions)
-        paths.emplace_back(1, dir);
+    seen.insert(position);
 
-    std::set<std::pair<int, int>> seen;
-
-    while (!paths.empty()) {
-        Path path = paths.front();
-        paths.pop_front();
-
-        auto [s, where] = forward(droid, path);
-
-        if (s == Status::WALL) {
-            path.pop_back();
-            reverse(droid, path);
-            continue;
-        }
-
-        reverse(droid, path);
+    for (Direction d : directions) {
+        droid.get_inputs()->push(Data{(int) d});
+        Status s = static_cast<Status>((int) droid.get_outputs()->pop());
 
         if (s == Status::FOUND)
-            return path;
-        if (seen.count(where))
-            continue;
+            return {true, steps_so_far + 1};
+        if (s == Status::MOVED) {
+            update_position(position, d);
+            auto[found, steps] = find_oxygen_dfs(droid, seen, position, steps_so_far + 1);
+            if (found)
+                return {true, steps};
 
-        seen.insert(where);
-
-        for (Direction dir : directions)
-        {
-            if (dir != ~path.back()) {
-                path.push_back(dir);
-                paths.push_back(path);
-                path.pop_back();
-            }
+            // Undo movement.
+            update_position(position, ~d);
+            droid.get_inputs()->push(Data{(int) ~d});
+            droid.get_outputs()->pop();
         }
     }
-
-    return Path{};
+    return {false, steps_so_far};
 }
-
-//Path find_oxygen_dfs(Process<Data>& droid, std::set<std::pair<int, int>>& seen) {
-//
-//}
-
 
 
 int main() {
     auto assembly = read_program<Data>("input.txt");
-    auto inputs = std::make_shared<IOQueue<Data>>();
-    auto outputs = std::make_shared<IOQueue<Data>>();
-    Process droid{assembly, inputs, outputs};
-    Path path_to_oxygen = find_oxygen(droid);
-    std::cout << "Part 1: " << path_to_oxygen.size() << std::endl;
+    Process droid{assembly};
 
-//    int i = 0;
-//    while (i >= 0) {
-//        std::cout << "Next direction: ";
-//        std::cin >> i;
-//        inputs->push(Data{i});
-//        std::cout << "Status: " << outputs->pop() << std::endl;
-//    }
-
+    std::set<std::pair<int, int>> seen;
+    auto[found, steps] = find_oxygen_dfs(droid, seen, {0, 0}, 0);
+    assert(found);
+    std::cout << "Part 1: " << steps << std::endl;
     droid.join();
 }
