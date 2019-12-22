@@ -52,34 +52,43 @@ constexpr void update_position(std::pair<int, int>& point, Direction d) {
     }
 }
 
-std::pair<bool, int>
+std::tuple<bool, int, std::pair<int, int>>
 find_oxygen_dfs(Process<Data>& droid, std::set<std::pair<int, int>>& seen, std::pair<int, int> position,
                 int steps_so_far) {
 
-    if (seen.count(position))
-        return {false, steps_so_far};
 
     seen.insert(position);
 
+    int max_steps_seen = steps_so_far;
     for (Direction d : directions) {
         droid.get_inputs()->push(Data{(int) d});
         Status s = static_cast<Status>((int) droid.get_outputs()->pop());
 
-        if (s == Status::FOUND)
-            return {true, steps_so_far + 1};
-        if (s == Status::MOVED) {
-            update_position(position, d);
-            auto[found, steps] = find_oxygen_dfs(droid, seen, position, steps_so_far + 1);
-            if (found)
-                return {true, steps};
-
-            // Undo movement.
+        update_position(position, d);
+        if (s != Status::WALL && seen.count(position))
+        {
             update_position(position, ~d);
             droid.get_inputs()->push(Data{(int) ~d});
             droid.get_outputs()->pop();
+            continue;
         }
+
+        if (s == Status::FOUND)
+            return {true, steps_so_far + 1, position};
+        if (s == Status::MOVED) {
+            auto[found, steps, found_pos] = find_oxygen_dfs(droid, seen, position, steps_so_far + 1);
+            if (found)
+                return {true, steps, found_pos};
+
+            max_steps_seen = std::max(max_steps_seen, steps);
+
+            // Undo movement.
+            droid.get_inputs()->push(Data{(int) ~d});
+            droid.get_outputs()->pop();
+        }
+        update_position(position, ~d);
     }
-    return {false, steps_so_far};
+    return {false, max_steps_seen, position};
 }
 
 
@@ -88,8 +97,22 @@ int main() {
     Process droid{assembly};
 
     std::set<std::pair<int, int>> seen;
-    auto[found, steps] = find_oxygen_dfs(droid, seen, {0, 0}, 0);
+    auto[found, steps, oxygen_location] = find_oxygen_dfs(droid, seen, {0, 0}, 0);
     assert(found);
     std::cout << "Part 1: " << steps << std::endl;
+    std::cout << "Oxygen located at " << oxygen_location.first << " " << oxygen_location.second << std::endl;
+
+//    int i = 0;
+//    while (i >= 0) {
+//        std::cin >> i;
+//        droid.get_inputs()->push((Data) i);
+//    }
+
+    std::set<std::pair<int, int>> new_seen;
+    auto[found_second, steps_, pos] = find_oxygen_dfs(droid, new_seen, oxygen_location, 0);
+    std::cout << "Part 2: " << steps_ << std::endl;
+    assert(!found_second);
+
+
     droid.join();
 }
