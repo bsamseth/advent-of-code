@@ -74,10 +74,32 @@ Here are the first eight digits of the final output list after 100 phases for so
 
 After **100** phases of FFT, **what are the first eight digits in the final output list?**
 
-To begin, [get your puzzle input](16/input).
+Your puzzle answer was `23135243`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+Now that your FFT is working, you can decode the **real signal**.
+
+The real signal is your puzzle input **repeated 10000 times**. Treat this new signal as a single input list. Patterns are still calculated as before, and 100 phases of FFT are still applied.
+
+The **first seven digits** of your initial input signal also represent the **message offset**. The message offset is the location of the eight-digit message in the final output list. Specifically, the message offset indicates **the number of digits to skip** before reading the eight-digit message. For example, if the first seven digits of your initial input signal were `1234567`, the eight-digit message would be the eight digits after skipping 1,234,567 digits of the final output list. Or, if the message offset were `7` and your final output list were `98765432109876543210`, the eight-digit message would be `21098765`. (Of course, your real message offset will be a seven-digit number, not a one-digit number like `7`.)
+
+Here is the eight-digit message in the final output list after 100 phases. The message offset given in each input has been highlighted. (Note that the inputs given below are repeated 10000 times to find the actual starting input lists.)
+
+- `**0303673**2577212944063491565474664` becomes `84462026`.
+- `**0293510**9699940807407585447034323` becomes `78725270`.
+- `**0308177**0884921959731165446850517` becomes `53553731`.
+
+After repeating your input signal 10000 times and running 100 phases of FFT, **what is the eight-digit message embedded in the final output list?**
+
+Your puzzle answer was `21130597`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2019) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](16/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Flawed+Frequency+Transmission%22+%2D+Day+16+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F16&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Flawed+Frequency+Transmission%22+%2D+Day+16+%2D+Advent+of+Code+2019&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2019%2Fday%2F16&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
