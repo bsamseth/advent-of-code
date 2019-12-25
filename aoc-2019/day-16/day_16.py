@@ -1,5 +1,5 @@
 import numpy as np
-from tqdm import tqdm
+from numba import njit
 
 
 def get_matrix(n):
@@ -18,6 +18,16 @@ def iterate(A, x, times):
     return x
 
 
+@njit
+def calc(x):
+    for _ in range(100):
+        s = 0
+        for i in range(len(x) - 1, -1, -1):
+            s += x[i]
+            x[i] = s % 10
+    return x
+
+
 with open("input.txt") as f:
     vector = np.array([int(d) for d in list(f.read().strip())])
 
@@ -30,12 +40,5 @@ full_length = len(vector) * 10000
 offset_modulus = offset % full_length
 need_to_do = full_length - offset
 new_vector = np.roll(vector, -offset_modulus)
-result = np.tile(new_vector, need_to_do // len(new_vector) + 1)[:need_to_do]
-
-for _ in tqdm(range(100)):
-    s = 0
-    for i in reversed(range(len(result))):
-        s += result[i]
-        result[i] = s % 10
-
+result = calc(np.tile(new_vector, need_to_do // len(new_vector) + 1)[:need_to_do])
 print("Part 2:", "".join(str(d) for d in result[:8]))
