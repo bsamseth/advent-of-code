@@ -10,7 +10,7 @@ to look for the cookie that was sent with the request.
 import argparse
 import datetime
 import os
-import sys
+
 import requests
 from bs4 import BeautifulSoup
 from tomd import Tomd
