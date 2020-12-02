@@ -29,10 +29,24 @@ In this list, the two entries that sum to `2020` are `1721` and `299`. Multiplyi
 
 Of course, your expense report is much larger. **Find the two entries that sum to `2020`; what do you get if you multiply them together?**
 
-To begin, [get your puzzle input](1/input).
+Your puzzle answer was `928896`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+The Elves in accounting are thankful for your help; one of them even offers you a starfish coin they had left over from a past vacation. They offer you a second one if you can find **three** numbers in your expense report that meet the same criteria.
+
+Using the above example again, the three entries that sum to `2020` are `979`, `366`, and `675`. Multiplying them together produces the answer, `**241861950**`.
+
+In your expense report, **what is the product of the three entries that sum to `2020`?**
+
+Your puzzle answer was `295668576`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2020) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](1/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Report+Repair%22+%2D+Day+1+%2D+Advent+of+Code+2020&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2020%2Fday%2F1&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Report+Repair%22+%2D+Day+1+%2D+Advent+of+Code+2020&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2020%2Fday%2F1&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
