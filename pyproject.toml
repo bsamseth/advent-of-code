@@ -19,6 +19,7 @@ z3-solver = "^4.8.9"
 scipy = "^1.5.4"
 tqdm = "^4.54.0"
 pydantic = "^1.7.3"
+toolz = "^0.11.1"
 
 [tool.poetry.dev-dependencies]
 
