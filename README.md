@@ -1,12 +1,14 @@
 # Advent of Code
 Working repo for [Advent of Code](https://adventofcode.com).
 
+Typically solved in Python, a good portion of earier years in C++ and a pinch of Haskell.
+
 ## Dependencies
 
-Use [pipenv](https://pipenv.readthedocs.io/en/latest/) to install dependecies from the [Pipfile](Pipfile). Written for Python 3.7, with no concern for backwards compatibility.
+Use [poetry](https://python-poetry.org) to install dependencies from the [pyproject.toml](pyproject.toml). Written for Python 3.8 with no concern for backwards compatibility.
 ```bash
-> pipenv install
-> pipenv shell
+> poetry install
+> poetry run python <path to solution>
 ```
 
 ## `init_day.py`
