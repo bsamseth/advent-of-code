@@ -18,3 +18,6 @@ This script will fetch the description and input data for a given day and year. 
 ``` bash
 > python init_day.py output-folder-path --day 25 --year 2018
 ```
+
+Your AoC session key must be provided, and by default it is assumed to be the content of a file located in `~/.config/aocd/token`.
+To get the session key, open the input file url when logged in to AoC and use the inspector to look for the cookie that was sent with the request.
