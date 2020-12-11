@@ -20,6 +20,9 @@ def see_seat(seats, i, j, di, dj, trace):
 
 
 def new_seat_state(seats, i, j, trace):
+    if seats[i][j] == ".":
+        return "."
+
     adjacent_count = adjacents(seats, i, j, trace)
     return (
         "#"
