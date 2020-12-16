@@ -5,18 +5,13 @@ with open("input.txt") as f:
 
 fields = [
     (c, int(a_1), int(a_2), int(b_1), int(b_2))
-    for c, _, _, a_1, a_2, _, b_1, b_2 in re.findall(
-        r"((\w+ ?)+): ((\d+)-(\d+)) or ((\d+)-(\d+))", notes
+    for c, a_1, a_2, b_1, b_2 in re.findall(
+        r"((?:\w+ ?)+): (?:(\d+)-(\d+)) or (?:(\d+)-(\d+))", notes
     )
 ]
-my_ticket = list(
-    map(int, re.search(r"your ticket:\n(((\d+),?)+)", notes).group(1).split(","))
-)
-nearby_tickets = [
+my_ticket, *nearby_tickets = [
     list(map(int, ticket.split(",")))
-    for ticket in re.search(r"nearby tickets:\n((((\d+,?)+)\n?)+)", notes)
-    .group(1)
-    .split("\n")
+    for ticket in re.findall(r"^((?:\d+,?)+)$", notes, flags=re.MULTILINE)
 ]
 
 
