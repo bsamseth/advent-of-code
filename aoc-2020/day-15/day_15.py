@@ -1,9 +1,9 @@
 import time
 import numpy as np
-from numba import njit
+from numba import njit, uint32
 
 
-@njit
+@njit(uint32(uint32, uint32[:], uint32, uint32))
 def play_till_round(max_round, memory, last_number, n_starting_numbers):
     for round_nr in range(n_starting_numbers + 1, max_round + 1):
         next_number = (
@@ -15,7 +15,7 @@ def play_till_round(max_round, memory, last_number, n_starting_numbers):
 
 
 def initial_memory(numbers, max_round):
-    memory = np.zeros(max_round, dtype=int)
+    memory = np.zeros(max_round, dtype=np.uint32)
     for i, n in enumerate(numbers[:-1]):
         memory[n] = i + 1
     return memory
