@@ -19,7 +19,7 @@ def play_combat(deck1, deck2):
     return p1 or p2
 
 
-def play_recursive_combat():
+def play_recursive_combat(player1_deck, player2_deck):
     memory = set()
 
     def recursive_combat(deck1, deck2, game):
@@ -51,7 +51,7 @@ def play_recursive_combat():
 
         return 1 if p1 else 2, p1 if p1 else p2
 
-    return recursive_combat
+    return recursive_combat(player1_deck, player2_deck, game=1)[1]
 
 
 def score(cards):
@@ -59,4 +59,4 @@ def score(cards):
 
 
 print("Part 1:", score(play_combat(player1, player2)))
-print("Part 2:", score(play_recursive_combat()(player1, player2, game=1)[1]))
+print("Part 2:", score(play_recursive_combat(player1, player2)))
