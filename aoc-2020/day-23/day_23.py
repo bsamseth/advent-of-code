@@ -1,10 +1,12 @@
 import time
 
-from toolz import sliding_window
+import numpy as np
+from numba import njit
 
 t0 = time.time()
 
 
+@njit
 def move(curr, successors):
     a = successors[curr]
     b = successors[a]
@@ -22,10 +24,11 @@ def move(curr, successors):
     return after_c
 
 
+@njit
 def solve(order, moves):
     # Build successor array:
-    successors = [0] * (len(order) + 1)
-    for a, b in sliding_window(2, order):
+    successors = np.zeros(len(order) + 1, dtype=np.uint32)
+    for a, b in zip(order, order[1:]):
         successors[a] = b
     successors[order[-1]] = order[0]
 
@@ -47,10 +50,14 @@ def iterate_successors(successors):
 with open("input.txt") as f:
     starting_order = list(map(int, list(f.read().strip())))
 
-print("Part 1:", "".join(map(str, iterate_successors(solve(starting_order, 100))))[1:])
+print(
+    "Part 1:",
+    "".join(map(str, iterate_successors(solve(np.array(starting_order), 100))))[1:],
+)
 
 successors = solve(
-    starting_order + list(range(len(starting_order) + 1, 1_000_000 + 1)), 10_000_000
+    np.array(starting_order + list(range(len(starting_order) + 1, 1_000_000 + 1))),
+    10_000_000,
 )
-print("Part 2:", successors[1] * successors[successors[1]])
+print("Part 2:", int(successors[1]) * int(successors[successors[1]]))
 print(f"Total time: {round(time.time() - t0, 2)} seconds")
