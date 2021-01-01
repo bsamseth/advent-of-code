@@ -128,3 +128,4 @@ cabal.project.local~
 .HTF/
 .ghc.environment.*
 .idea
+day_*.x
