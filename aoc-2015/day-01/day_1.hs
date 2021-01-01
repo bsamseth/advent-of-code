@@ -1,22 +1,21 @@
 main = do
     content <- readFile    "input.txt"
-    putStr "Part 1: "
-    print $ part1 0 content
-    putStr "Part 2: "
-    print $ part2 1 0 content
+    putStrLn $ "Part 1: " ++ show (part1 content)
+    putStrLn $ "Part 2: " ++  show (part2 content)
 
-part1 :: Int -> String -> Int
-part1 s [] = s
-part1 s (x:xs)
-  | x == '(' = part1 (s+1) xs
-  | otherwise = part1 (s-1) xs
-
-part2 :: Int -> Int -> String -> Int
-part2 _ _ [] = -1
-part2 i s (x:xs)
-    | s + change < 0 = i
-    | otherwise = part2 (i+1) (s+change) xs
+translated :: String -> [Int]
+translated s = map translate s
   where
-    change
+    translate x
       | x == '(' = 1
       | otherwise = -1
+  
+part1 :: String -> Int
+part1 s = (sum . translated) s
+  
+part2 :: String -> Int
+part2 s = index
+  where
+    (index, _) = head $ filter in_basement (zip [1..] cumsum)
+    cumsum = scanl (+) 0 $ translated s
+    in_basement (_, level) = level < 0
