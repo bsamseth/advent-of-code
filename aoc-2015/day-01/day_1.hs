@@ -1,8 +1,7 @@
-import AocHaskell.Input
-
+-- stack --resolver lts-16.27 script 
 main :: IO ()
 main = do
-    content <- getInput 2015 01
+    content <- readFile "input.txt"
     putStrLn $ "Part 1: " ++ show (part1 content)
     putStrLn $ "Part 2: " ++  show (part2 content)
 

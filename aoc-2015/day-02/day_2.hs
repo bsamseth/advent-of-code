@@ -1,10 +1,11 @@
-import AocHaskell.Input
+-- stack --resolver lts-16.27 script --package split
+
 import Data.List.Split (splitOn)
 import Data.List (sort)
 
 main :: IO ()
 main = do
-  content <- getInput 2015 2
+  content <- readFile "input.txt"
   let orders = lines content
   putStrLn $ "Part 1: " ++  (show . sum . map requriedWrappingPaper) orders
   putStrLn $ "Part 1: " ++  (show . sum . map requiredRibbon) orders

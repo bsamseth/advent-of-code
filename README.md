@@ -3,13 +3,25 @@ Working repo for [Advent of Code](https://adventofcode.com).
 
 Typically solved in Python, a good portion of earier years in C++ and a pinch of Haskell.
 
-## Dependencies
+## Python dependencies
 
 Use [poetry](https://python-poetry.org) to install dependencies from the [pyproject.toml](pyproject.toml). Written for Python 3.8 with no concern for backwards compatibility.
 ```bash
 > poetry install
 > poetry run python <path to solution>
 ```
+
+## Haskell
+
+Some solutions are written in Haskell. To run these in a way that ensures any
+potential extra packages are available, use [stack](https://docs.haskellstack.org/en/stable/README/).
+Once installed, the solutions can be run as stack scripts:
+
+```
+> cd aoc-20XX/day-XX
+> stack day_XX.hs
+```
+
 
 ## `init_day.py`
 
