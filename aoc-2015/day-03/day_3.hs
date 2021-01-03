@@ -1,4 +1,4 @@
--- stack --resolver lts-16.27 script --package containers
+-- stack --resolver lts-16.27 script --package containers --optimize
 
 import qualified Data.Set as Set
 

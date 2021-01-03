@@ -129,3 +129,5 @@ cabal.project.local~
 .ghc.environment.*
 .idea
 day_*.x
+day_*
+!day_*.hs

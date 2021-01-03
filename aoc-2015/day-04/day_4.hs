@@ -1,4 +1,4 @@
--- stack --resolver lts-16.27 script --package cryptohash,bytestring
+-- stack --resolver lts-16.27 script --package cryptohash,bytestring --optimize
 {-# LANGUAGE OverloadedStrings #-}
 
 import Crypto.Hash.MD5

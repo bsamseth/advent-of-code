@@ -1,4 +1,4 @@
--- stack --resolver lts-16.27 script --package split
+-- stack --resolver lts-16.27 script --package split --optimize
 
 import Data.List.Split (splitOn)
 import Data.List (sort)
