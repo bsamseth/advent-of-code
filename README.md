@@ -8,7 +8,8 @@ Typically solved in Python, a good portion of earier years in C++ and a pinch of
 Use [poetry](https://python-poetry.org) to install dependencies from the [pyproject.toml](pyproject.toml). Written for Python 3.8 with no concern for backwards compatibility.
 ```bash
 > poetry install
-> poetry run python <path to solution>
+> cd <path to solution>
+> poetry run python day_XX.py
 ```
 
 ## Haskell
