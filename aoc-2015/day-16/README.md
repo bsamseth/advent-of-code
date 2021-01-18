@@ -37,10 +37,24 @@ You make a list of the things you can remember about each Aunt Sue.  Things miss
 
 What is the **number** of the Sue that got you the gift?
 
-To begin, [get your puzzle input](16/input).
+Your puzzle answer was `373`.
 
-Answer: <input autocomplete="off" name="answer" type="text"/> <input type="submit" value="[Submit]"/>
+## --- Part Two ---
+
+As you're about to send the thank you note, something in the MFCSAM's instructions catches your eye.  Apparently, it has an outdated [retroencabulator](https://www.youtube.com/watch?v=RXJKdh1KZ0w), and so the output from the machine isn't exact values - some of them indicate ranges.
+
+In particular, the `cats` and `trees` readings indicates that there are **greater than** that many (due to the unpredictable nuclear decay of cat dander and tree pollen), while the `pomeranians` and `goldfish` readings indicate that there are **fewer than** that many (due to the modial interaction of magnetoreluctance).
+
+What is the **number** of the real Aunt Sue?
+
+Your puzzle answer was `260`.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
+At this point, you should [return to your Advent calendar](/2015) and try another puzzle.
+
+If you still want to see it, you can [get your puzzle input](16/input).
 
 You can also [Shareon
-  [Twitter](https://twitter.com/intent/tweet?text=%22Aunt+Sue%22+%2D+Day+16+%2D+Advent+of+Code+2015&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2015%2Fday%2F16&amp;related=ericwastl&amp;hashtags=AdventOfCode)
+  [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Aunt+Sue%22+%2D+Day+16+%2D+Advent+of+Code+2015&amp;url=https%3A%2F%2Fadventofcode%2Ecom%2F2015%2Fday%2F16&amp;related=ericwastl&amp;hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
