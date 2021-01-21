@@ -24,6 +24,10 @@ regex = "^2020.11.13"
 parse = "^1.18.0"
 
 [tool.poetry.dev-dependencies]
+python-language-server = {extras = ["all"], version = "^0.36.2"}
+pyls-mypy = "^0.1.8"
+pyls-isort = "^0.2.0"
+pyls-black = "^0.4.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
