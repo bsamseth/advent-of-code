@@ -131,3 +131,5 @@ cabal.project.local~
 day_*.x
 day_*
 !day_*.hs
+!day_*.py
+!day_*.cpp

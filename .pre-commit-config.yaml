@@ -10,8 +10,6 @@ repos:
     -   id: pretty-format-json
         args: [--autofix]
     -   id: check-builtin-literals
-    -   id: flake8
-        args: [--max-line-length=120]
 
 - repo: local
   hooks:
@@ -33,5 +31,5 @@ repos:
       name: flake8
       stages: [commit]
       language: system
-      entry: poetry run flake8 --ignore=E225 --max-line-length=119
+      entry: poetry run flake8 --ignore=E225,E203,W503 --max-line-length=119
       types: [python]
