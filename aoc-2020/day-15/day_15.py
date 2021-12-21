@@ -1,4 +1,8 @@
+# Note: this broke when moving to Python 3.9 duo to some issue with numba.
+# Refer to C++ implementation.
+
 import time
+
 import numpy as np
 from numba import njit, uint32
 
