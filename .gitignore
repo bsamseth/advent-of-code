@@ -133,3 +133,4 @@ day_*
 !day_*.hs
 !day_*.py
 !day_*.cpp
+test.txt
