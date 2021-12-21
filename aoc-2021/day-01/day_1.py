@@ -4,7 +4,7 @@ with open("input.txt") as f:
     numbers = list(map(int, f.read().splitlines()))
 
 
-def pair_compare(*x):
+def pair_compare(x):
     return x[0] < x[1]
 
 
