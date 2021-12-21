@@ -1,4 +1,5 @@
 import networkx as nx
+from aocd import lines, submit
 
 
 def traverse(graph, path, node, allow_twice_visit=False):
@@ -20,9 +21,6 @@ def traverse(graph, path, node, allow_twice_visit=False):
     return n_paths
 
 
-with open("input.txt") as f:
-    graph = nx.Graph([line.strip().split("-") for line in f])
-
-
-print("Part 1:", traverse(graph, [], "start"))
-print("Part 2:", traverse(graph, [], "start", allow_twice_visit=True))
+graph = nx.Graph([line.strip().split("-") for line in lines])
+submit(traverse(graph, [], "start"), part=1)
+submit(traverse(graph, [], "start", allow_twice_visit=True), part=2)
