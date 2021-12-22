@@ -20,7 +20,7 @@ with open("input.txt") as f:
     x, y = zip(*map(parse_instruction, f))
 
 horizontal, depth = map(sum, (x, y))
-print("Part 1", horizontal * depth)
+print("Part 1:", horizontal * depth)
 
 depth = sum(starmap(operator.mul, zip(accumulate(operator.add, y), x)))
 print("Part 2:", horizontal * depth)
