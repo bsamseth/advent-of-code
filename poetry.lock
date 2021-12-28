@@ -5,6 +5,7 @@ description = "Get your puzzle data with a single import"
 category = "main"
 optional = false
 python-versions = "*"
+develop = false
 
 [package.dependencies]
 beautifulsoup4 = "*"
@@ -14,6 +15,12 @@ python-dateutil = "*"
 requests = "*"
 termcolor = "*"
 tzlocal = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/bsamseth/advent-of-code-data"
+reference = "master"
+resolved_reference = "6ce697563547c090b7656372d52c2b70a498a0b7"
 
 [[package]]
 name = "beautifulsoup4"
@@ -571,12 +578,10 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.9"
-content-hash = "586c0459b33cc39217b0d6c03382fab0aa806768d29720d9b4a785dd9c6a9f5f"
+content-hash = "05c5a2bd2ee9ed53c445901bb31de825043daa11f2df2bedecc15bca855204b0"
 
 [metadata.files]
-advent-of-code-data = [
-    {file = "advent_of_code_data-1.1.1-py2.py3-none-any.whl", hash = "sha256:25b00813a758bd7925db87ac8c91a345e43dd8b59bbaeb80a2076c62476e3882"},
-]
+advent-of-code-data = []
 beautifulsoup4 = [
     {file = "beautifulsoup4-4.10.0-py3-none-any.whl", hash = "sha256:9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf"},
     {file = "beautifulsoup4-4.10.0.tar.gz", hash = "sha256:c23ad23c521d818955a4151a67d81580319d4bf548d3d49f4223ae041ff98891"},
