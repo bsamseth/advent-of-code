@@ -11,7 +11,7 @@ tomd = "^0.1.3"
 bs4 = "^0.0.1"
 requests = "^2.25.0"
 matplotlib = "^3.5.1"
-numba = "^0.54.1"
+numba = "^0.56.4"
 urllib3 = ">=1.24.2"
 networkx = "^2.5"
 z3-solver = "^4.8.9"
@@ -21,9 +21,9 @@ pydantic = "^1.7.3"
 toolz = "^0.11.1"
 regex = "^2021.11.10"
 parse = "^1.18.0"
-llvmlite = "^0.37.0"
+llvmlite = { path = "/Users/bsamseth/programs/llvmlite-main/dist/llvmlite-0+unknown.tar.gz" }
 pytesseract = "^0.3.8"
-advent-of-code-data = {git = "https://github.com/bsamseth/advent-of-code-data"}
+advent-of-code-data = { git = "https://github.com/bsamseth/advent-of-code-data" }
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
