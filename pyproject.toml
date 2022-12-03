@@ -23,7 +23,7 @@ regex = "^2021.11.10"
 parse = "^1.18.0"
 llvmlite = { path = "/Users/bsamseth/programs/llvmlite-main/dist/llvmlite-0+unknown.tar.gz" }
 pytesseract = "^0.3.8"
-advent-of-code-data = { git = "https://github.com/bsamseth/advent-of-code-data" }
+advent-of-code-data = "^1.3.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
