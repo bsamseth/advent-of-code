@@ -9,27 +9,29 @@ class Dir:
     name: str
     contents: list[Union["Dir", "File"]]
     parent: Optional["Dir"] = None
-    
+
     @property
     def path(self) -> str:
         if self.parent is None:
             return "/"
         return f"{self.parent.path}{self.name}/"
-    
+
     @property
     def size(self) -> int:
         return sum(child.size for child in self.contents)
-    
+
+
 @dataclass
 class File:
     name: str
     size: int
 
+
 def parse(data: str) -> Dir:
     lines = iter(data.splitlines()[1:])
     dirs = {"/": Dir(name="", contents=[])}
     cwd = dirs["/"]
-    
+
     for line in lines:
         if line.startswith("$ ls"):
             continue
@@ -52,6 +54,7 @@ def parse(data: str) -> Dir:
             cwd.contents.append(file)
     return dirs["/"]
 
+
 def dirs_with_size_at_most(dir_: Dir, n: int) -> Iterator[Dir]:
     if dir_.size <= n:
         yield dir_
@@ -59,12 +62,21 @@ def dirs_with_size_at_most(dir_: Dir, n: int) -> Iterator[Dir]:
         if isinstance(child, Dir):
             yield from dirs_with_size_at_most(child, n)
 
+
 def sizes(dir_: Dir) -> Iterator[int]:
     yield dir_.size
     for child in dir_.contents:
         if isinstance(child, Dir):
             yield from sizes(child)
 
+
 root = parse(data)
 submit(part=1, answer=sum(dir.size for dir in dirs_with_size_at_most(root, 100000)))
-submit(part=2, answer=next(size for size in sorted(sizes(root)) if size >= 30000000 - (70000000 - root.size)))
+submit(
+    part=2,
+    answer=next(
+        size
+        for size in sorted(sizes(root))
+        if size >= 30000000 - (70000000 - root.size)
+    ),
+)

@@ -4,7 +4,7 @@ from aocd import data, submit
 def scan(grid: list[list[int]], i, j, di, dj):
     count = 0
     height = grid[i][j]
-    while 0 <= (i := i + di) < len(grid) and 0 <= (j := j+dj) < len(grid[0]):
+    while 0 <= (i := i + di) < len(grid) and 0 <= (j := j + dj) < len(grid[0]):
         count += 1
         if grid[i][j] >= height:
             break
