@@ -4,6 +4,8 @@ use anyhow::{anyhow, Result};
 use regex::Regex;
 
 pub struct Aocd {
+    year: u16,
+    day: u8,
     client: reqwest::blocking::Client,
     cache: cache::Cache,
 }
@@ -13,7 +15,7 @@ impl Aocd {
     ///
     /// Requires a valid session cookie from adventofcode.com to be in a file named `~/.config/aocd/token`
     /// It will also require write access to `~/.cache/aocd` to cache puzzle inputs and answers.
-    pub fn new() -> Self {
+    pub fn new(year: u16, day: u8) -> Self {
         let session_token = find_aoc_token();
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert(
@@ -24,33 +26,38 @@ impl Aocd {
             .default_headers(headers)
             .build()
             .unwrap();
-        let cache = cache::Cache::new();
+        let cache = cache::Cache::new(year, day);
 
-        Self { client, cache }
+        Self {
+            year,
+            day,
+            client,
+            cache,
+        }
     }
 
     /// Get the puzzle input for the given year and day.
     ///
     /// If possible this will fetch from a local cache, and only fall back to the server if necessary.
-    pub fn get_input(&self, year: u16, day: u8) -> String {
-        if let Ok(input) = self.cache.get_input(year, day) {
+    pub fn get_input(&self) -> String {
+        if let Ok(input) = self.cache.get_input() {
             return input;
         }
         let input = self
             .client
-            .get(&format!("{}/{}/day/{}/input", AOC_URL, year, day))
+            .get(&format!("{}/{}/day/{}/input", AOC_URL, self.year, self.day))
             .send()
             .expect("Failed to get input")
             .text()
             .expect("Failed to parse input");
-        self.cache.cache_input(year, day, &input);
+        self.cache.cache_input(&input);
         input
     }
 
     /// Submit an answer to the given year, day, and part.
-    pub fn submit(&self, year: u16, day: u8, part: u8, answer: impl ToString) {
+    pub fn submit(&self, part: u8, answer: impl ToString) {
         // First check if we have already cached a _correct_ answer for this puzzle.
-        if let Ok(correct_answer) = self.cache.get_correct_answer(year, day, part) {
+        if let Ok(correct_answer) = self.cache.get_correct_answer(part) {
             let fill_word = if correct_answer == answer.to_string() {
                 "the same"
             } else {
@@ -64,10 +71,7 @@ impl Aocd {
         }
 
         // Now check if we have already checked this particular answer before. If so we know it is wrong.
-        if let Ok(response) = self
-            .cache
-            .get_answer_response(year, day, part, &answer.to_string())
-        {
+        if let Ok(response) = self.cache.get_answer_response(part, &answer.to_string()) {
             println!(
                 "You've already incorrectly guessed {}, and the server responed with:\n{}",
                 answer.to_string(),
@@ -77,7 +81,7 @@ impl Aocd {
         }
 
         // Only now do we actually submit the (new) answer.
-        let url = format!("{}/{}/day/{}/answer", AOC_URL, year, day);
+        let url = format!("{}/{}/day/{}/answer", AOC_URL, self.year, self.day);
         let response = self
             .client
             .post(&url)
@@ -93,10 +97,10 @@ impl Aocd {
             .text()
             .expect("Falied to read response from AoC after posting answer.");
 
-        self.handle_answer_response(year, day, part, &answer.to_string(), &response_html);
+        self.handle_answer_response(part, &answer.to_string(), &response_html);
     }
 
-    fn handle_answer_response(&self, year: u16, day: u8, part: u8, answer: &str, html: &str) {
+    fn handle_answer_response(&self, part: u8, answer: &str, html: &str) {
         let mut response = None;
         for line in html.lines() {
             if line.starts_with("<article>") {
@@ -122,22 +126,22 @@ impl Aocd {
             // We've apparently already solved this in the past, but the cache has no memory of that.
             // In this case we look up what we've solved in the past, and cache it.
             // Then we can restart the submit flow entirely, and it should not hit this case again.
-            match self.cache_past_answers(year, day) {
-                Ok(()) => return self.submit(year, day, part, answer),
+            match self.cache_past_answers() {
+                Ok(()) => return self.submit(part, answer),
                 _ => panic!("Failed to cache past answers, even though we thought we had solved this puzzle before. BUG!"),
             }
         }
 
         self.cache
-            .cache_answer_response(year, day, part, answer, response, correct);
+            .cache_answer_response(part, answer, response, correct);
     }
 
-    fn cache_past_answers(&self, year: u16, day: u8) -> Result<()> {
+    fn cache_past_answers(&self) -> Result<()> {
         println!(
             "Caching past answers for {} day {} by parsing the puzzle page.",
-            year, day
+            self.year, self.day
         );
-        let url = format!("{}/{}/day/{}/answer", AOC_URL, year, day);
+        let url = format!("{}/{}/day/{}/answer", AOC_URL, self.year, self.day);
         let response = self.client.get(&url).send()?.error_for_status()?;
         let response_html = response.text()?;
 
@@ -156,25 +160,13 @@ impl Aocd {
         println!("Found past answers: {:?} {:?}", part1, part2);
         let mut found_any = false;
         if let Some(part1) = part1 {
-            self.cache.cache_answer_response(
-                year,
-                day,
-                1,
-                &part1,
-                "That's the right answer!",
-                true,
-            );
+            self.cache
+                .cache_answer_response(1, &part1, "That's the right answer!", true);
             found_any = true;
         }
         if let Some(part2) = part2 {
-            self.cache.cache_answer_response(
-                year,
-                day,
-                2,
-                &part2,
-                "That's the right answer!",
-                true,
-            );
+            self.cache
+                .cache_answer_response(2, &part2, "That's the right answer!", true);
             found_any = true;
         }
         if found_any {
