@@ -10,8 +10,7 @@ impl Cache {
     pub fn new(year: u16, day: u8) -> Self {
         let directory = shellexpand::tilde("~/.cache/aocd").to_string();
         std::fs::create_dir_all(&directory)
-            .expect(&format!("Faled to create cache directory: {}", directory));
-
+            .unwrap_or_else(|_| panic!("Faled to create cache directory: {}", directory));
         let connection = Connection::open(&format!("{}/aocd.sqlite", directory))
             .expect("Failed to open cache database");
 

@@ -1,7 +1,8 @@
 use crate::cache;
-use crate::AOC_URL;
 use anyhow::{anyhow, Result};
 use regex::Regex;
+
+const AOC_URL: &str = "https://adventofcode.com";
 
 pub struct Aocd {
     year: u16,
@@ -151,7 +152,7 @@ impl Aocd {
         let mut part2: Option<String> = None;
         let re = Regex::new(r#"Your puzzle answer was <code>(.*)</code>"#).unwrap();
         for capture in re.captures_iter(&response_html) {
-            if let None = part1 {
+            if part1.is_none() {
                 part1 = Some(capture[1].to_string());
             } else {
                 part2 = Some(capture[1].to_string());
@@ -180,13 +181,12 @@ impl Aocd {
 fn find_aoc_token() -> String {
     let path = shellexpand::tilde("~/.config/aocd/token");
     std::fs::read_to_string(path.as_ref())
-        .expect(
-            format!(
+        .unwrap_or_else(|_| {
+            panic!(
                 "{} not found. Please add this file with a valid token.",
                 &path
             )
-            .as_str(),
-        )
+        })
         .trim()
         .to_string()
 }
