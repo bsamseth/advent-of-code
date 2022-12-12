@@ -1,8 +1,8 @@
-use aocd_rs::Aocd;
+use aocd::Aocd;
 
 fn main() {
-    let client = Aocd::new();
-    let input = client.get_input(2022, 1);
+    let client = Aocd::new(2022, 1);
+    let input = client.get_input();
 
     let mut elves: Vec<_> = input
         .split("\n\n")
@@ -10,6 +10,6 @@ fn main() {
         .collect();
     elves.sort();
 
-    client.submit(2022, 1, 1, elves.last().unwrap());
-    client.submit(2022, 1, 2, elves.iter().rev().take(3).sum::<u32>());
+    client.submit(1, elves.last().unwrap());
+    client.submit(2, elves.iter().rev().take(3).sum::<u32>());
 }

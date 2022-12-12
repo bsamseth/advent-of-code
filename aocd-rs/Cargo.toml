@@ -1,5 +1,5 @@
 [package]
-name = "aocd-rs"
+name = "aocd"
 version = "0.1.0"
 edition = "2021"
 
