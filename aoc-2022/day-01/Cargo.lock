@@ -31,6 +31,8 @@ checksum = "216261ddc8289130e551ddcd5ce8a064710c0d064a4d2895c67151c92b5443f6"
 [[package]]
 name = "aocd"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac4422e391ee8188a655aec553d807ea9890c4088af7bea6dc5b50e0d380638e"
 dependencies = [
  "anyhow",
  "regex",
