@@ -1,6 +1,5 @@
-use std::{collections::HashMap, fmt::Display};
-
 use aocd::*;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Point(i32, i32);
@@ -55,15 +54,6 @@ impl Cave {
         self.cells.contains_key(p)
     }
 
-    fn cell(&self, p: &Point) -> &char {
-        if let Some(floor) = self.floor {
-            if p.1 == floor {
-                return &'#';
-            }
-        }
-        self.cells.get(p).unwrap_or(&'.')
-    }
-
     fn fill(&mut self) {
         let max_y = self
             .floor
@@ -96,25 +86,6 @@ impl Cave {
 
     fn count(&self) -> usize {
         self.cells.values().filter(|&&c| c == 'O').count()
-    }
-}
-
-impl Display for Cave {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let min_x = self.cells.keys().map(|p| p.0).min().unwrap_or(0) - 2;
-        let max_x = self.cells.keys().map(|p| p.0).max().unwrap_or(0) + 2;
-        let min_y = self.cells.keys().map(|p| p.1).min().unwrap_or(0) - 1;
-        let max_y = self
-            .floor
-            .unwrap_or_else(|| self.cells.keys().map(|p| p.1).max().unwrap_or(0))
-            + 1;
-        for y in min_y..=max_y {
-            for x in min_x..=max_x {
-                write!(f, "{}", self.cell(&Point(x, y)))?;
-            }
-            writeln!(f)?;
-        }
-        Ok(())
     }
 }
 
