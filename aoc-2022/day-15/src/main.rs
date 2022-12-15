@@ -87,10 +87,9 @@ fn main() {
             continue;
         }
         for x in sensor.0 - max_dx..=sensor.0 + max_dx {
-            if occupied.contains(&Coord(x, target_y)) {
-                continue;
+            if !occupied.contains(&Coord(x, target_y)) {
+                empty_spaces_on_target_y.insert(x);
             }
-            empty_spaces_on_target_y.insert(x);
         }
     }
     submit!(1, empty_spaces_on_target_y.len());
