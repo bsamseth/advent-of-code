@@ -12,7 +12,6 @@ struct Valve {
 struct Node {
     at: usize,
     time: u16,
-    last: Option<usize>,
     open: u64,
     acc_flow: u32,
 }
@@ -25,7 +24,6 @@ impl Ord for Node {
             .then_with(|| self.acc_flow.cmp(&other.acc_flow))
             .then_with(|| self.open.cmp(&other.open))
             .then_with(|| self.at.cmp(&other.at))
-            .then_with(|| self.last.cmp(&other.last))
     }
 }
 
@@ -36,22 +34,44 @@ impl PartialOrd for Node {
 }
 
 impl Node {
-    fn flow_rate(&self, valves: &Vec<Valve>) -> u32 {
-        let mut flow = 0;
-        for (i, valve) in valves.iter().enumerate() {
-            if self.open & (1 << i) != 0 {
-                flow += valve.flow_rate;
-            }
-        }
-        flow
-    }
-
     fn is_open(&self) -> bool {
         self.open & (1 << self.at) != 0
     }
 
     fn all_open(&self, valves: &Vec<Valve>) -> bool {
         self.open == (1 << valves.len()) - 1
+    }
+
+    fn maximal_playout(&self, valves: &Vec<Valve>, max_time: u16) -> u32 {
+        let mut acc_flow = self.acc_flow;
+        let mut flow_rate = self.flow_rate(valves);
+        let mut time = self.time;
+        let mut valves: Vec<_> = valves
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| self.open & (1 << i) == 0)
+            .map(|(_, v)| v.flow_rate)
+            .collect();
+        valves.sort();
+        for valve_flow_rate in valves.iter().rev() {
+            if time < max_time {
+                time += 1;
+                acc_flow += flow_rate;
+                flow_rate += valve_flow_rate;
+            }
+        }
+        acc_flow += flow_rate * ((max_time - time) as u32);
+        acc_flow
+    }
+
+    fn flow_rate(&self, valves: &Vec<Valve>) -> u32 {
+        let mut flow_rate = 0;
+        for (i, valve) in valves.iter().enumerate() {
+            if self.open & (1 << i) != 0 {
+                flow_rate += valve.flow_rate;
+            }
+        }
+        flow_rate
     }
 }
 
@@ -102,7 +122,7 @@ fn main() {
     let mut queue = std::collections::BinaryHeap::new();
     queue.push(Node {
         at: valve_index["AA"],
-        last: None,
+        // last: None,
         time: 0,
         open: valves.iter().enumerate().fold(0, |acc, (i, v)| {
             if v.flow_rate == 0 {
@@ -115,14 +135,27 @@ fn main() {
     });
     println!("number of valves {:?}", valves.len());
     let max_time = 30;
+    let mut t = 0;
+    let mut max_found = 0;
     while let Some(node) = queue.pop() {
+        if t < node.time {
+            t = node.time;
+            println!("time {:?}", t);
+        }
         if node.time == max_time {
+            println!("{}", node.acc_flow);
             submit!(1, node.acc_flow);
             break;
         }
 
-        let flow = node.flow_rate(&valves);
         let remaining_time = (max_time - node.time) as u32;
+
+        max_found = max_found.max(node.acc_flow);
+        if node.maximal_playout(&valves, max_time) < max_found {
+            continue;
+        }
+
+        let flow_rate = node.flow_rate(&valves);
 
         // If all valves are open, we can't open any more.
         if node.all_open(&valves) {
@@ -131,10 +164,9 @@ fn main() {
                 &mut seen,
                 Node {
                     at: node.at,
-                    last: node.last,
                     time: max_time,
                     open: node.open,
-                    acc_flow: node.acc_flow + flow * remaining_time,
+                    acc_flow: node.acc_flow + flow_rate * remaining_time,
                 },
             );
             continue;
@@ -142,40 +174,33 @@ fn main() {
 
         // Option 1: Stay put, opening the valve if it's closed. This should not be searched,
         // as if we want to move later we should have done so here.
+        let flow_rate_if_opened = flow_rate
+            + if node.is_open() {
+                0
+            } else {
+                valves[node.at].flow_rate
+            };
         push_dedup(
             &mut queue,
             &mut seen,
             Node {
                 at: node.at,
-                last: Some(node.at),
                 time: max_time,
                 open: node.open | (1 << node.at),
-                acc_flow: node.acc_flow
-                    + (flow * remaining_time).max(
-                        flow + (remaining_time - 1)
-                            * (flow + (!node.is_open() as u32) * valves[node.at].flow_rate),
-                    ),
+                acc_flow: node.acc_flow + flow_rate + (remaining_time - 1) * flow_rate_if_opened,
             },
         );
 
         // Option 2: Leave the valve as-is, and go to a connecting valve.
         for connection in &valves[node.at as usize].connections {
-            // Don't go back to the last valve if it is closed.
-            // It would have been at least equally good to stay put there and open the valve.
-            if let Some(last) = node.last {
-                if last == *connection && (node.open & (1 << last)) == 0 {
-                    continue;
-                }
-            }
             push_dedup(
                 &mut queue,
                 &mut seen,
                 Node {
                     at: *connection,
-                    last: Some(node.at),
                     time: node.time + 1,
                     open: node.open,
-                    acc_flow: node.acc_flow + flow,
+                    acc_flow: node.acc_flow + flow_rate,
                 },
             );
         }
@@ -188,10 +213,9 @@ fn main() {
                     &mut seen,
                     Node {
                         at: *connection,
-                        last: Some(node.at),
                         time: node.time + 2,
                         open: node.open | (1 << node.at),
-                        acc_flow: node.acc_flow + 2 * flow + valves[node.at as usize].flow_rate,
+                        acc_flow: node.acc_flow + flow_rate + flow_rate_if_opened,
                     },
                 );
             }
