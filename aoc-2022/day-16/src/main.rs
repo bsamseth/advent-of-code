@@ -169,6 +169,7 @@ fn main() {
                     acc_flow: node.acc_flow + flow_rate * remaining_time,
                 },
             );
+            max_found = max_found.max(node.acc_flow + flow_rate * remaining_time);
             continue;
         }
 
@@ -190,6 +191,8 @@ fn main() {
                 acc_flow: node.acc_flow + flow_rate + (remaining_time - 1) * flow_rate_if_opened,
             },
         );
+        max_found =
+            max_found.max(node.acc_flow + flow_rate * (remaining_time - 1) + flow_rate_if_opened);
 
         // Option 2: Leave the valve as-is, and go to a connecting valve.
         for connection in &valves[node.at as usize].connections {
