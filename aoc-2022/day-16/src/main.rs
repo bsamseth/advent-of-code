@@ -1,88 +1,131 @@
 use aocd::*;
+use itertools::Itertools;
 use regex::Regex;
 use std::collections::HashMap;
 
 #[derive(Debug)]
 struct Valve {
-    connections: Vec<usize>,
-    flow_rate: u32,
+    connections: Vec<u8>,
+    flow_rate: u16,
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-struct Node {
-    at: usize,
-    time: u16,
-    open: u64,
-    acc_flow: u32,
-}
-
-impl Ord for Node {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other
-            .time
-            .cmp(&self.time)
-            .then_with(|| self.acc_flow.cmp(&other.acc_flow))
-            .then_with(|| self.open.cmp(&other.open))
-            .then_with(|| self.at.cmp(&other.at))
+fn push_dedup(
+    queue: &mut std::collections::BinaryHeap<State>,
+    seen: &mut std::collections::HashSet<State>,
+    state: State,
+) {
+    if seen.insert(state.clone()) {
+        queue.push(state);
     }
 }
 
-impl PartialOrd for Node {
+#[derive(Clone, Debug, Eq, PartialEq)]
+enum Choice {
+    Open,
+    Move(u8),
+}
+
+/*
+
+R = Max flow rate: sum(valve.flow_rate for valve in valves)
+F = Max flow: Max flow rate * max_time
+T = Max time = 26
+
+
+f(n) = g(n) + h(n),
+g(n) = time * R
+h(n) = (R - flow_rate) * time
+
+
+Start: open = 0, loc = (0, 0), acc_flow = 0, time = 0   --- cost = max flow - max playout
+
+
+Some step: open = 0b1011101, loc = (_, _), acc_flow = 55 time = 7
+
+
+End: open = ~0, loc = (_, _), acc_flow = X, time = 26
+*/
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+struct State {
+    x: u8,
+    y: u8,
+    time: u8,
+    acc_flow: u16,
+    f: u16,
+    open: u64,
+}
+
+impl Ord for State {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        other
+            .f
+            .cmp(&self.f)
+            .then_with(|| other.time.cmp(&self.time))
+            .then_with(|| self.acc_flow.cmp(&other.acc_flow))
+    }
+}
+
+impl PartialOrd for State {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Node {
-    fn is_open(&self) -> bool {
-        self.open & (1 << self.at) != 0
+impl State {
+    fn new(
+        x: u8,
+        y: u8,
+        time: u8,
+        acc_flow: u16,
+        open: u64,
+        max_time: u8,
+        max_flow_rate: u16,
+        valves: &Vec<Valve>,
+    ) -> Self {
+        let mut s = Self {
+            x: x.min(y),
+            y: x.max(y),
+            time,
+            acc_flow,
+            f: 0,
+            open,
+        };
+        s.f = f(
+            acc_flow,
+            flow_rate(open, valves),
+            time,
+            max_time,
+            max_flow_rate,
+        );
+        s
     }
 
-    fn all_open(&self, valves: &Vec<Valve>) -> bool {
-        self.open == (1 << valves.len()) - 1
+    fn open(&self, v: u8) -> bool {
+        self.open & (1u64 << v) != 0
     }
-
-    fn maximal_playout(&self, valves: &Vec<Valve>, max_time: u16) -> u32 {
-        let mut acc_flow = self.acc_flow;
-        let mut flow_rate = self.flow_rate(valves);
-        let mut time = self.time;
-        let mut valves: Vec<_> = valves
-            .iter()
-            .enumerate()
-            .filter(|(i, _)| self.open & (1 << i) == 0)
-            .map(|(_, v)| v.flow_rate)
-            .collect();
-        valves.sort();
-        for valve_flow_rate in valves.iter().rev() {
-            if time < max_time {
-                time += 1;
-                acc_flow += flow_rate;
-                flow_rate += valve_flow_rate;
-            }
-        }
-        acc_flow += flow_rate * ((max_time - time) as u32);
-        acc_flow
-    }
-
-    fn flow_rate(&self, valves: &Vec<Valve>) -> u32 {
-        let mut flow_rate = 0;
-        for (i, valve) in valves.iter().enumerate() {
-            if self.open & (1 << i) != 0 {
-                flow_rate += valve.flow_rate;
-            }
-        }
-        flow_rate
+    fn all_open(&self, n_valves: u8) -> bool {
+        self.open == (1 << n_valves) - 1
     }
 }
 
-fn push_dedup(
-    queue: &mut std::collections::BinaryHeap<Node>,
-    seen: &mut std::collections::HashSet<Node>,
-    node: Node,
-) {
-    if seen.insert(node.clone()) {
-        queue.push(node);
+fn f(acc_flow: u16, flow_rate: u16, time: u8, max_time: u8, max_flow_rate: u16) -> u16 {
+    let g = max_flow_rate * (time as u16);
+    let h = (max_flow_rate - flow_rate) * (time as u16);
+    g + h
+}
+
+fn flow_rate(open: u64, valves: &Vec<Valve>) -> u16 {
+    let mut flow_rate = 0;
+    for (i, valve) in valves.iter().enumerate() {
+        if open & (1u64 << i) != 0 {
+            flow_rate += valve.flow_rate;
+        }
     }
+    flow_rate
+}
+fn maximal_playout(state: &State, max_flow_rate: u16, max_time: u8) -> u16 {
+    state.acc_flow + max_flow_rate * ((max_time - state.time) as u16)
 }
 
 #[aocd(2022, 16)]
@@ -101,7 +144,7 @@ fn main() {
 
     let valve_regex = Regex::new(r"[A-Z]{2}").unwrap();
     let number_regex = Regex::new(r"\d+").unwrap();
-    let valve_index: HashMap<String, usize> = input
+    let valve_index: HashMap<String, u8> = input
         .lines()
         .map(|line| valve_regex.find(line).unwrap().as_str().to_string())
         .zip(0..)
@@ -118,109 +161,115 @@ fn main() {
         })
         .collect();
 
+    let max_time = 26;
+    let max_flow_rate = valves.iter().map(|v| v.flow_rate).sum();
+    let all_open = (1u64 << valves.len()) - 1;
     let mut seen = std::collections::HashSet::new();
     let mut queue = std::collections::BinaryHeap::new();
-    queue.push(Node {
-        at: valve_index["AA"],
-        // last: None,
-        time: 0,
-        open: valves.iter().enumerate().fold(0, |acc, (i, v)| {
+    queue.push(State::new(
+        valve_index["AA"],
+        valve_index["AA"],
+        0,
+        0,
+        valves.iter().enumerate().fold(0, |acc, (i, v)| {
             if v.flow_rate == 0 {
                 acc | (1 << i)
             } else {
                 acc
             }
         }),
-        acc_flow: 0,
-    });
-    println!("number of valves {:?}", valves.len());
-    let max_time = 30;
+        max_time,
+        max_flow_rate,
+        &valves,
+    ));
+
     let mut t = 0;
     let mut max_found = 0;
-    while let Some(node) = queue.pop() {
-        if t < node.time {
-            t = node.time;
+    while let Some(state) = queue.pop() {
+        if t < state.time {
+            t = state.time;
             println!("time {:?}", t);
         }
-        if node.time == max_time {
-            println!("{}", node.acc_flow);
-            submit!(1, node.acc_flow);
+        if state.open == all_open {
+            println!("{}", state.acc_flow);
             break;
         }
+        let fr = flow_rate(state.open, &valves);
 
-        let remaining_time = (max_time - node.time) as u32;
-
-        max_found = max_found.max(node.acc_flow);
-        if node.maximal_playout(&valves, max_time) < max_found {
+        max_found = max_found.max(state.acc_flow);
+        if maximal_playout(&state, max_flow_rate, max_time) < max_found {
             continue;
         }
 
-        let flow_rate = node.flow_rate(&valves);
+        let x_choices = vec![Choice::Open]
+            .into_iter()
+            .chain(
+                valves[state.x as usize]
+                    .connections
+                    .iter()
+                    .map(|&i| Choice::Move(i)),
+            )
+            .collect::<Vec<_>>();
+        let y_choices = vec![Choice::Open]
+            .into_iter()
+            .chain(
+                valves[state.y as usize]
+                    .connections
+                    .iter()
+                    .map(|&i| Choice::Move(i)),
+            )
+            .collect::<Vec<_>>();
 
-        // If all valves are open, we can't open any more.
-        if node.all_open(&valves) {
-            push_dedup(
-                &mut queue,
-                &mut seen,
-                Node {
-                    at: node.at,
-                    time: max_time,
-                    open: node.open,
-                    acc_flow: node.acc_flow + flow_rate * remaining_time,
-                },
-            );
-            max_found = max_found.max(node.acc_flow + flow_rate * remaining_time);
-            continue;
-        }
+        for (c1, c2) in x_choices.into_iter().cartesian_product(y_choices) {
+            let mut new_open = state.open;
+            let mut new_x = state.x;
+            let mut new_y = state.y;
+            match (c1, c2) {
+                (Choice::Open, Choice::Open) if !state.open(state.x) && !state.open(state.y) => {
+                    new_open |= (1 << state.x) | (1 << state.y);
+                }
+                (Choice::Open, Choice::Move(i)) if !state.open(state.x) => {
+                    new_open |= 1 << state.x;
+                    new_y = i;
+                }
+                (Choice::Move(i), Choice::Open) if !state.open(state.y) => {
+                    new_open |= 1 << state.y;
+                    new_x = i;
+                }
+                (Choice::Move(i), Choice::Move(j)) => {
+                    new_x = i;
+                    new_y = j;
+                }
+                _ => continue,
+            }
 
-        // Option 1: Stay put, opening the valve if it's closed. This should not be searched,
-        // as if we want to move later we should have done so here.
-        let flow_rate_if_opened = flow_rate
-            + if node.is_open() {
-                0
+            let new_state = if new_open == all_open {
+                State::new(
+                    0,
+                    0,
+                    state.time + 1,
+                    state.acc_flow + fr + max_flow_rate * (max_time - state.time - 1) as u16,
+                    all_open,
+                    max_time,
+                    max_flow_rate,
+                    &valves,
+                )
             } else {
-                valves[node.at].flow_rate
+                State::new(
+                    new_x,
+                    new_y,
+                    state.time + 1,
+                    state.acc_flow + fr,
+                    new_open,
+                    max_time,
+                    max_flow_rate,
+                    &valves,
+                )
             };
-        push_dedup(
-            &mut queue,
-            &mut seen,
-            Node {
-                at: node.at,
-                time: max_time,
-                open: node.open | (1 << node.at),
-                acc_flow: node.acc_flow + flow_rate + (remaining_time - 1) * flow_rate_if_opened,
-            },
-        );
-        max_found =
-            max_found.max(node.acc_flow + flow_rate * (remaining_time - 1) + flow_rate_if_opened);
 
-        // Option 2: Leave the valve as-is, and go to a connecting valve.
-        for connection in &valves[node.at as usize].connections {
-            push_dedup(
-                &mut queue,
-                &mut seen,
-                Node {
-                    at: *connection,
-                    time: node.time + 1,
-                    open: node.open,
-                    acc_flow: node.acc_flow + flow_rate,
-                },
-            );
-        }
-
-        // Option 3: Open the valve, and go to a connecting valve.
-        if !node.is_open() {
-            for connection in &valves[node.at as usize].connections {
-                push_dedup(
-                    &mut queue,
-                    &mut seen,
-                    Node {
-                        at: *connection,
-                        time: node.time + 2,
-                        open: node.open | (1 << node.at),
-                        acc_flow: node.acc_flow + flow_rate + flow_rate_if_opened,
-                    },
-                );
+            max_found = max_found.max(new_state.acc_flow);
+            if maximal_playout(&new_state, max_flow_rate, max_time) >= max_found {
+                push_dedup(&mut queue, &mut seen, new_state);
             }
         }
     }
