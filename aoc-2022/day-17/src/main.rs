@@ -1,32 +1,96 @@
-use std::fmt::Display;
+use itertools::Itertools;
+use std::{
+    collections::{HashMap, VecDeque},
+    fmt::Display,
+};
 
 use aocd::*;
 
-#[derive(Debug)]
+// The main function isn't that bad. Just don't look at what comes after it. Spagehtti special.
+#[aocd(2022, 17)]
+fn main() {
+    let input = input!();
+    let jets = input.chars().collect::<Vec<_>>();
+    let pieces = [
+        "..@@@@.",
+        "...@...\n..@@@..\n...@...",
+        "..@@@..\n....@..\n....@..",
+        "..@....\n..@....\n..@....\n..@....",
+        "..@@...\n..@@...",
+    ]
+    .iter()
+    .map(|p: &&str| Piece(p.lines().map(|l| l.chars().collect()).collect()))
+    .collect::<Vec<_>>();
+
+    let mut chamber = Chamber::new(&jets, &pieces);
+    let mut signs: HashMap<String, (u64, u64)> = HashMap::new();
+    let mut period = 0u64;
+    let mut i = 1u64;
+    let target = 1_000_000_000_000u64;
+    while i <= target {
+        chamber.drop_piece();
+
+        if i == 2022 {
+            submit!(1, chamber.total_height());
+        }
+
+        if period == 0 && i >= 10_000 {
+            if let Some((last_i, last_height)) =
+                signs.insert(chamber.signature(), (i, chamber.total_height() as u64))
+            {
+                period = i - last_i;
+                let height_diff = chamber.total_height() as u64 - last_height;
+                assert!(last_i == 10_000);
+
+                let skips = (target - i) / period;
+                chamber.pruned_height += (height_diff * skips) as usize;
+                i += skips * period;
+            }
+        }
+
+        i += 1;
+    }
+    submit!(2, chamber.total_height());
+}
+
+#[derive(Debug, Clone)]
 struct Piece(Vec<Vec<char>>);
 
 #[derive(Debug)]
 struct Chamber {
-    rows: Vec<Vec<char>>,
+    rows: VecDeque<Vec<char>>,
     in_motion: usize,
+    pruned_height: usize,
+    jet_index: usize,
+    piece_index: usize,
+    jets: Vec<char>,
+    pieces: Vec<Piece>,
 }
 
 impl Chamber {
-    fn new() -> Self {
+    fn new(jets: &[char], pieces: &[Piece]) -> Self {
+        let mut rows = VecDeque::new();
+        rows.push_back(vec!['-'; 7]);
         Self {
-            rows: vec![vec!['-'; 7]],
+            rows,
             in_motion: 0,
+            pruned_height: 0,
+            jet_index: 0,
+            piece_index: 0,
+            jets: jets.into(),
+            pieces: pieces.into(),
         }
     }
 
-    fn spawn(&mut self, piece: &Piece) {
+    fn spawn(&mut self) {
+        let piece = &self.pieces[self.piece_index % self.pieces.len()];
         let room = self.rows.len() - self.highest_piece() - 1;
 
         for _ in room..3 {
-            self.rows.push(vec!['.'; 7])
+            self.rows.push_back(vec!['.'; 7])
         }
         for _ in 3..room {
-            self.rows.pop();
+            self.rows.pop_back();
         }
 
         self.rows.extend(piece.0.clone());
@@ -35,6 +99,37 @@ impl Chamber {
             .iter()
             .map(|row| row.iter().filter(|&&c| c == '@').count())
             .sum();
+    }
+
+    fn prune(&mut self) {
+        for _ in 0..(self.rows.len() as isize - 1000).max(0) {
+            self.rows.pop_front();
+            self.pruned_height += 1;
+        }
+    }
+
+    fn drop_piece(&mut self) {
+        self.prune();
+        self.spawn();
+        self.piece_index += 1;
+
+        loop {
+            self.jet(self.jets[self.jet_index % self.jets.len()]);
+            self.jet_index += 1;
+
+            if !self.drop() {
+                break;
+            }
+        }
+    }
+
+    fn signature(&self) -> String {
+        format!(
+            "{} {} {}",
+            self.jet_index % self.jets.len(),
+            self.piece_index % self.pieces.len(),
+            self.rows.iter().map(|r| r.iter().format("")).format("\n")
+        )
     }
 
     fn can_move(&self, dx: isize) -> bool {
@@ -77,6 +172,10 @@ impl Chamber {
             }
         }
         true
+    }
+
+    fn total_height(&self) -> usize {
+        self.highest_piece() + self.pruned_height
     }
 
     fn highest_piece(&self) -> usize {
@@ -188,40 +287,4 @@ impl Display for Chamber {
         }
         Ok(())
     }
-}
-
-#[aocd(2022, 17)]
-fn main() {
-    // let input = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";
-    let input = input!();
-
-    let jets = input.chars().collect::<Vec<_>>();
-    let pieces = [
-        "..@@@@.",
-        "...@...\n..@@@..\n...@...",
-        "..@@@..\n....@..\n....@..",
-        "..@....\n..@....\n..@....\n..@....",
-        "..@@...\n..@@...",
-    ]
-    .iter()
-    .map(|p: &&str| Piece(p.lines().map(|l| l.chars().collect()).collect()))
-    .collect::<Vec<_>>();
-
-    let mut chamber = Chamber::new();
-
-    let mut jet_index = 0;
-    for (_i, piece) in (1..=2022).zip(pieces.iter().cycle()) {
-        chamber.spawn(piece);
-
-        loop {
-            chamber.jet(jets[jet_index % jets.len()]);
-            jet_index += 1;
-
-            if !chamber.drop() {
-                break;
-            }
-        }
-    }
-
-    submit!(1, chamber.highest_piece());
 }
