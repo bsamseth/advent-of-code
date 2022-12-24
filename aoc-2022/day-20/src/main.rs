@@ -1,9 +1,7 @@
 use std::cell::RefCell;
-use std::fmt::Display;
 
 use aocd::*;
 
-#[derive(Debug, Clone)]
 struct Node {
     x: i64,
     next: usize,
@@ -11,7 +9,6 @@ struct Node {
     me: usize,
 }
 
-#[derive(Debug)]
 struct List {
     zero: usize,
     nodes: Vec<RefCell<Node>>,
@@ -58,21 +55,6 @@ impl List {
             node = self.nodes[node.next].borrow();
         }
         node.x
-    }
-}
-
-impl Display for List {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut as_vec = Vec::with_capacity(self.nodes.len());
-        let mut node = self.nodes[self.zero].borrow();
-        loop {
-            as_vec.push(node.x);
-            node = self.nodes[node.next].borrow();
-            if node.me == self.zero {
-                break;
-            }
-        }
-        write!(f, "{:?}", as_vec)
     }
 }
 
