@@ -1,81 +1,133 @@
 use aocd::*;
 use regex::Regex;
 
-#[derive(Debug, Clone)]
-enum Instruction {
-    Left,
-    Right,
-    Forward(u32),
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum Square {
+    Empty,
+    Open,
+    Closed,
 }
 
-fn walk(
-    map: &Vec<Vec<char>>,
-    y: i32,
-    x: i32,
-    direction: (i32, i32),
-    inst: Instruction,
-) -> (i32, i32, (i32, i32)) {
-    match inst {
-        Instruction::Left => (
-            y,
-            x,
-            match direction {
-                (0, 1) => (0 - 1, 0),
-                (0, -1) => (1, 0),
-                (1, 0) => (0, 1),
-                (-1, 0) => (0, 0 - 1),
-                _ => unreachable!(),
+#[derive(Debug, Clone, Copy)]
+enum Turn {
+    Left,
+    Right,
+}
+
+#[derive(Clone, Copy)]
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+impl Direction {
+    fn turn(&self, turn: Turn) -> Direction {
+        match turn {
+            Turn::Left => match self {
+                Direction::Up => Direction::Left,
+                Direction::Down => Direction::Right,
+                Direction::Left => Direction::Down,
+                Direction::Right => Direction::Up,
             },
-        ),
-        Instruction::Right => (
-            y,
-            x,
-            match direction {
-                (0, 1) => (1, 0),
-                (0, -1) => (0 - 1, 0),
-                (1, 0) => (0, 0 - 1),
-                (-1, 0) => (0, 1),
-                _ => unreachable!(),
+            Turn::Right => match self {
+                Direction::Up => Direction::Right,
+                Direction::Down => Direction::Left,
+                Direction::Left => Direction::Up,
+                Direction::Right => Direction::Down,
             },
-        ),
-        Instruction::Forward(0) => (y, x, direction),
-        Instruction::Forward(n) => {
-            let (mut u, mut v) = (y, x);
-            loop {
-                u = (u + direction.0).rem_euclid(map.len() as i32);
-                v = (v + direction.1).rem_euclid(map.get(u as usize).unwrap().len() as i32);
-                if let Some(' ') = map.get(u as usize).and_then(|r| r.get(v as usize)) {
-                    continue;
-                }
-                break;
-            }
-            match map[u as usize][v as usize] {
-                '.' => walk(map, u, v, direction, Instruction::Forward(n - 1)),
-                '#' => walk(map, y, x, direction, Instruction::Forward(0)),
-                _ => unreachable!(),
-            }
         }
     }
 }
 
-fn display(map: &Vec<Vec<char>>, y: i32, x: i32, direction: (i32, i32)) {
-    let mut v = map.clone();
-    v[y as usize][x as usize] = match direction {
-        (0, 1) => '>',
-        (0, -1) => '<',
-        (1, 0) => 'v',
-        (-1, 0) => '^',
-        _ => unreachable!(),
-    };
-    for r in v {
-        println!("{}", r.iter().collect::<String>());
+#[derive(Debug)]
+enum Instruction {
+    Turn(Turn),
+    Forward(usize),
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Coord {
+    row: usize,
+    col: usize,
+}
+
+fn act(
+    map: &Vec<Vec<Square>>,
+    mut pos: Coord,
+    dir: Direction,
+    inst: &Instruction,
+) -> (Coord, Direction) {
+    match inst {
+        Instruction::Turn(turn) => (pos, dir.turn(*turn)),
+        Instruction::Forward(0) => (pos, dir),
+        Instruction::Forward(mut steps) => {
+            let mut last_valid = pos;
+            while steps > 0 {
+                let new_pos = match dir {
+                    Direction::Up => Coord {
+                        row: (map.len() + pos.row - 1).rem_euclid(map.len()),
+                        col: pos.col,
+                    },
+                    Direction::Down => Coord {
+                        row: (pos.row + 1).rem_euclid(map.len()),
+                        col: pos.col,
+                    },
+                    Direction::Left => Coord {
+                        row: pos.row,
+                        col: (map[pos.row].len() + pos.col - 1).rem_euclid(map[pos.row].len()),
+                    },
+                    Direction::Right => Coord {
+                        row: pos.row,
+                        col: (pos.col + 1).rem_euclid(map[pos.row].len()),
+                    },
+                };
+
+                match map.get(new_pos.row).and_then(|r| r.get(new_pos.col)) {
+                    None | Some(Square::Empty) => {
+                        pos = new_pos;
+                    }
+                    Some(Square::Open) => {
+                        pos = new_pos;
+                        last_valid = pos;
+                        steps -= 1
+                    }
+                    Some(Square::Closed) => break,
+                }
+            }
+            (last_valid, dir)
+        }
     }
-    println!();
+}
+
+fn display(map: &Vec<Vec<Square>>, pos: &Coord, dir: &Direction) {
+    for (i, row) in map.iter().enumerate() {
+        for (j, square) in row.iter().enumerate() {
+            if i == pos.row && j == pos.col {
+                match dir {
+                    Direction::Up => print!("^"),
+                    Direction::Down => print!("v"),
+                    Direction::Left => print!("<"),
+                    Direction::Right => print!(">"),
+                }
+            } else {
+                match square {
+                    Square::Empty => print!(" "),
+                    Square::Open => print!("."),
+                    Square::Closed => print!("#"),
+                }
+            }
+        }
+        println!("");
+    }
+    println!("");
 }
 
 #[aocd(2022, 22)]
 fn main() {
-    let input = input!();
+    // let input = input!();
+    let input = include_str!("../input.txt");
     // let input = std::fs::read_to_string("input.txt").unwrap();
     //     let input = "        ...#
     //         .#..
@@ -98,47 +150,56 @@ fn main() {
 
     let map = map
         .lines()
-        .map(|line| line.chars().collect::<Vec<_>>())
+        .map(|line| {
+            line.chars()
+                .map(|c| match c {
+                    ' ' => Square::Empty,
+                    '.' => Square::Open,
+                    '#' => Square::Closed,
+                    _ => panic!("Invalid map"),
+                })
+                .collect::<Vec<_>>()
+        })
         .collect::<Vec<_>>();
 
     let path = Regex::new(r"(\d+|[LR])")
         .unwrap()
         .captures_iter(path)
         .map(|cap| match cap.get(1).unwrap().as_str() {
-            "L" => Instruction::Left,
-            "R" => Instruction::Right,
+            "L" => Instruction::Turn(Turn::Left),
+            "R" => Instruction::Turn(Turn::Right),
             num => Instruction::Forward(num.parse().unwrap()),
         })
         .collect::<Vec<_>>();
 
-    let mut y = 0;
-    let mut x = map[0]
-        .iter()
-        .enumerate()
-        .filter(|(_, &c)| c == '.')
-        .map(|(i, _)| i)
-        .next()
-        .unwrap() as i32;
-    let mut direction = (0, 1);
+    let mut pos = Coord {
+        row: 0,
+        col: map[0]
+            .iter()
+            .enumerate()
+            .filter(|(_, &c)| c == Square::Open)
+            .map(|(i, _)| i)
+            .next()
+            .unwrap(),
+    };
+    let mut direction = Direction::Right;
 
-    display(&map, y, x, direction);
+    // display(&map, &pos, &direction);
     for inst in path.iter() {
         // println!("{:?}", inst);
-        (y, x, direction) = walk(&map, y, x, direction, inst.clone());
-        // display(&map, y, x, direction);
+        (pos, direction) = act(&map, pos, direction, inst);
+        // display(&map, &pos, &direction);
     }
-    // println!("{:?}", path);
 
     println!(
         "{}",
-        (y + 1) * 1000
-            + 4 * (x + 1)
+        (pos.row + 1) * 1000
+            + 4 * (pos.col + 1)
             + match direction {
-                (0, 1) => 0,
-                (0, -1) => 1,
-                (1, 0) => 2,
-                (-1, 0) => 3,
-                _ => unreachable!(),
+                Direction::Right => 0,
+                Direction::Down => 1,
+                Direction::Left => 2,
+                Direction::Up => 3,
             }
     );
 }
