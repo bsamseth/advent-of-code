@@ -101,48 +101,9 @@ fn act(
     }
 }
 
-fn display(map: &Vec<Vec<Square>>, pos: &Coord, dir: &Direction) {
-    for (i, row) in map.iter().enumerate() {
-        for (j, square) in row.iter().enumerate() {
-            if i == pos.row && j == pos.col {
-                match dir {
-                    Direction::Up => print!("^"),
-                    Direction::Down => print!("v"),
-                    Direction::Left => print!("<"),
-                    Direction::Right => print!(">"),
-                }
-            } else {
-                match square {
-                    Square::Empty => print!(" "),
-                    Square::Open => print!("."),
-                    Square::Closed => print!("#"),
-                }
-            }
-        }
-        println!("");
-    }
-    println!("");
-}
-
 #[aocd(2022, 22)]
 fn main() {
-    // let input = input!();
-    let input = include_str!("../input.txt");
-    // let input = std::fs::read_to_string("input.txt").unwrap();
-    //     let input = "        ...#
-    //         .#..
-    //         #...
-    //         ....
-    // ...#.......#
-    // ........#...
-    // ..#....#....
-    // ..........#.
-    //         ...#....
-    //         .....#..
-    //         .#......
-    //         ......#.
-    //
-    // 10R5L5R10L4R5L5";
+    let input = input!();
     let (map, path) = match input.split("\n\n").collect::<Vec<_>>()[..] {
         [map, path] => (map, path),
         _ => panic!("Invalid input"),
@@ -184,15 +145,12 @@ fn main() {
     };
     let mut direction = Direction::Right;
 
-    // display(&map, &pos, &direction);
     for inst in path.iter() {
-        // println!("{:?}", inst);
         (pos, direction) = act(&map, pos, direction, inst);
-        // display(&map, &pos, &direction);
     }
 
-    println!(
-        "{}",
+    submit!(
+        1,
         (pos.row + 1) * 1000
             + 4 * (pos.col + 1)
             + match direction {
