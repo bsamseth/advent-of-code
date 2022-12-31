@@ -61,7 +61,7 @@ fn solve(map: &Vec<Vec<char>>, start_time: u16) -> u16 {
         if let Some(&b) = cache.get(state) {
             return b;
         }
-        let b = is_blizzard_check(&map, state.row, state.col, state.time);
+        let b = is_blizzard_check(map, state.row, state.col, state.time);
         cache.insert(state.clone(), b);
         b
     };
@@ -145,8 +145,8 @@ fn solve(map: &Vec<Vec<char>>, start_time: u16) -> u16 {
     unreachable!()
 }
 
-fn flip(map: &Vec<Vec<char>>) -> Vec<Vec<char>> {
-    let mut new_map = map.clone();
+fn flip(map: &[Vec<char>]) -> Vec<Vec<char>> {
+    let mut new_map = map.to_owned();
     for (i, row) in map.iter().rev().enumerate() {
         for (j, c) in row.iter().rev().enumerate() {
             new_map[i][j] = match c {
