@@ -1,4 +1,4 @@
-use aocd::*;
+use aocd::prelude::*;
 use derive_more::{Add, Sum};
 
 const DIGITS: [char; 5] = ['=', '-', '0', '1', '2'];
@@ -41,6 +41,6 @@ impl From<Snafu> for String {
 
 #[aocd(2022, 25)]
 fn main() {
-    let sum: Snafu = input!().lines().map(|l| l.into()).sum();
+    let sum: Snafu = input!().lines().map(Into::into).sum();
     submit!(1, String::from(sum));
 }
