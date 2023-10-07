@@ -10,6 +10,8 @@ to look for the cookie that was sent with the request.
 import argparse
 import datetime
 import os
+import subprocess
+import textwrap
 
 import requests
 from bs4 import BeautifulSoup
@@ -52,6 +54,18 @@ parser.add_argument(
     default=datetime.date.today().day,
     help="Which day to fetch data for.",
 )
+
+language_group = parser.add_mutually_exclusive_group()
+language_group.add_argument(
+    "--python",
+    action="store_true",
+    help="Initialize a Python solution.",
+)
+language_group.add_argument(
+    "--rust",
+    action="store_true",
+    help="Initialize a Rust solution.",
+)
 parser.add_argument(
     "--session-key",
     default="~/.config/aocd/token",
@@ -81,7 +95,30 @@ with open(args.session_key, "r") as f:
 with open(os.path.join(output, "input.txt"), "w") as f:
     f.write(get_content(args.year, args.day, "input", session_key=SESSION_KEY))
 
-
 # Write description.
 with open(os.path.join(output, "README.md"), "w") as f:
     f.write(get_content(args.year, args.day, session_key=SESSION_KEY))
+
+# Write solution.
+if args.python:
+    with open(os.path.join(output, f"day_{args.day}.py"), "w") as f:
+        f.write("from aocd import data\n")
+elif args.rust:
+    subprocess.run(
+        ["cargo", "init", "--bin", "--name", f"day-{args.day:02d}"], cwd=output
+    )
+    subprocess.run(["cargo", "add", "aocd"], cwd=output)
+    with open(os.path.join(output, "src", "main.rs"), "w") as f:
+        f.write(
+            textwrap.dedent(
+                f"""
+                use aocd::prelude::*;
+                
+                #[aocd({args.year}, {args.day})]
+                fn main() {{
+                    let input = input!();
+                    println!("{{}}", input);
+                }}
+                """
+            ).lstrip()
+        )
