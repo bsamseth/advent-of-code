@@ -101,24 +101,26 @@ with open(os.path.join(output, "README.md"), "w") as f:
 
 # Write solution.
 if args.python:
-    with open(os.path.join(output, f"day_{args.day}.py"), "w") as f:
-        f.write("from aocd import data\n")
+    if not os.path.exists(os.path.join(output, "__init__.py")):
+        with open(os.path.join(output, f"day_{args.day}.py"), "w") as f:
+            f.write("from aocd import data\n")
 elif args.rust:
-    subprocess.run(
-        ["cargo", "init", "--bin", "--name", f"day-{args.day:02d}"], cwd=output
-    )
-    subprocess.run(["cargo", "add", "aocd"], cwd=output)
-    with open(os.path.join(output, "src", "main.rs"), "w") as f:
-        f.write(
-            textwrap.dedent(
-                f"""
-                use aocd::prelude::*;
-                
-                #[aocd({args.year}, {args.day})]
-                fn main() {{
-                    let input = input!();
-                    println!("{{}}", input);
-                }}
-                """
-            ).lstrip()
+    if not os.path.exists(os.path.join(output, "Cargo.toml")):
+        subprocess.run(
+            ["cargo", "init", "--bin", "--name", f"day-{args.day:02d}"], cwd=output
         )
+        subprocess.run(["cargo", "add", "aocd"], cwd=output)
+        with open(os.path.join(output, "src", "main.rs"), "w") as f:
+            f.write(
+                textwrap.dedent(
+                    f"""
+                    use aocd::prelude::*;
+                    
+                    #[aocd({args.year}, {args.day})]
+                    fn main() {{
+                        let input = input!();
+                        println!("{{}}", input);
+                    }}
+                    """
+                ).lstrip()
+            )
