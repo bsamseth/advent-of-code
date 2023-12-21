@@ -1,8 +1,6 @@
 use aocd::prelude::*;
 use itertools::Itertools;
 
-const DIRECTIONS: [(isize, isize); 4] = [(0, 1), (0, -1), (1, 0), (-1, 0)];
-
 #[aocd(2023, 17)]
 fn main() {
     let grid = input!()
@@ -10,111 +8,124 @@ fn main() {
         .map(|l| l.chars().map(|c| c as u8 - b'0').collect_vec())
         .collect_vec();
 
+    submit!(1, solve(&grid, 1, 3));
+    submit!(2, solve(&grid, 4, 10));
+}
+
+fn solve(grid: &[Vec<u8>], min_step: usize, max_step: usize) -> usize {
     let h_cost = |(y, x): (usize, usize)| (grid.len() - 1 - y) + (grid[0].len() - 1 - x);
 
-    let mut seen = vec![vec![0; grid[0].len()]; grid.len()];
+    let mut seen: Vec<Vec<Dir>> = vec![vec![Dir(0); grid[0].len()]; grid.len()];
     let mut queue = std::collections::BinaryHeap::new();
-    queue.push(State {
-        path: vec![(0, 0)],
-        pos: (0, 0),
-        prev: (0, 0),
-        g_cost: 0,
-        h_cost: h_cost((0, 0)),
-        straights: 0,
+    [Dir::updown(), Dir::leftright()].iter().for_each(|&d| {
+        queue.push(State {
+            pos: (0, 0),
+            allowed_dir: d,
+            g_cost: 0,
+            h_cost: h_cost((0, 0)),
+        });
     });
 
     loop {
         let state = queue.pop().unwrap();
 
+        {
+            let seen = &mut seen[state.pos.0][state.pos.1];
+            if *seen & state.allowed_dir {
+                continue;
+            }
+            *seen |= state.allowed_dir;
+        }
+
         if state.pos == (grid.len() - 1, grid[0].len() - 1) {
-            submit!(1, state.g_cost);
-            break;
+            return state.g_cost;
         }
 
-        let flag = state.dir_flag() << (8 * state.straights);
+        let new_direction = state.allowed_dir.switch();
+        for (y, x) in state.allowed_dir {
+            let mut new_g_cost = state.g_cost;
+            for step in 1..=max_step {
+                let new_pos = (
+                    state.pos.0 as isize + y * step as isize,
+                    state.pos.1 as isize + x * step as isize,
+                );
 
-        if seen[state.pos.0][state.pos.1] & flag != 0 {
-            continue;
-        }
+                if new_pos.0 < 0
+                    || new_pos.1 < 0
+                    || new_pos.0 as usize >= grid.len()
+                    || new_pos.1 as usize >= grid[0].len()
+                {
+                    break;
+                }
 
-        seen[state.pos.0][state.pos.1] |= flag;
+                new_g_cost += grid[new_pos.0 as usize][new_pos.1 as usize] as usize;
 
-        for (y, x) in DIRECTIONS {
-            let new_pos = (state.pos.0 as isize + y, state.pos.1 as isize + x);
-            if new_pos.0 < 0
-                || new_pos.1 < 0
-                || new_pos.0 as usize >= grid.len()
-                || new_pos.1 as usize >= grid[0].len()
-                || (new_pos.0 as usize, new_pos.1 as usize) == state.prev
-            {
-                continue;
+                if step < min_step || seen[new_pos.0 as usize][new_pos.1 as usize] & new_direction {
+                    // The seen-check isn't strictly necessary, but it makes the search faster.
+                    continue;
+                }
+
+                let new_state = State {
+                    pos: (new_pos.0 as usize, new_pos.1 as usize),
+                    g_cost: new_g_cost,
+                    h_cost: h_cost((new_pos.0 as usize, new_pos.1 as usize)),
+                    allowed_dir: new_direction,
+                };
+
+                queue.push(new_state);
             }
-
-            let new_dir = (
-                new_pos.0 - state.pos.0 as isize,
-                new_pos.1 - state.pos.1 as isize,
-            );
-            let prev_dir = (
-                state.pos.0 as isize - state.prev.0 as isize,
-                state.pos.1 as isize - state.prev.1 as isize,
-            );
-
-            let new_straights = if new_dir == prev_dir {
-                state.straights + 1
-            } else {
-                1
-            };
-
-            if new_straights > 3 {
-                continue;
-            }
-
-            let new_state = State {
-                pos: (new_pos.0 as usize, new_pos.1 as usize),
-                prev: state.pos,
-                g_cost: state.g_cost + grid[new_pos.0 as usize][new_pos.1 as usize] as usize,
-                h_cost: h_cost((new_pos.0 as usize, new_pos.1 as usize)),
-                straights: new_straights,
-                path: state
-                    .path
-                    .clone()
-                    .into_iter()
-                    .chain(vec![(new_pos.0 as usize, new_pos.1 as usize)])
-                    .collect_vec(),
-            };
-
-            queue.push(new_state);
         }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
+struct Dir(u8);
+
+impl Dir {
+    fn leftright() -> Self {
+        Self(1)
+    }
+    fn updown() -> Self {
+        Self(2)
+    }
+    fn switch(&self) -> Self {
+        Self(((self.0 - 1) ^ 1) + 1)
+    }
+}
+
+impl std::ops::BitAnd for Dir {
+    type Output = bool;
+
+    fn bitand(self, rhs: Self) -> Self::Output {
+        self.0 & rhs.0 != 0
+    }
+}
+impl std::ops::BitOrAssign for Dir {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+
+impl IntoIterator for Dir {
+    type Item = (isize, isize);
+    type IntoIter = std::array::IntoIter<Self::Item, 2>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        [[(0, 1), (0, -1)], [(1, 0), (-1, 0)]][self.0 as usize - 1].into_iter()
     }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 struct State {
-    path: Vec<(usize, usize)>,
     pos: (usize, usize),
-    prev: (usize, usize),
+    allowed_dir: Dir,
     g_cost: usize,
     h_cost: usize,
-    straights: u8,
 }
 
 impl State {
     fn f_cost(&self) -> usize {
         self.g_cost + self.h_cost
-    }
-
-    fn dir(&self) -> (isize, isize) {
-        (
-            self.pos.0 as isize - self.prev.0 as isize,
-            self.pos.1 as isize - self.prev.1 as isize,
-        )
-    }
-
-    fn dir_flag(&self) -> u64 {
-        1u64 << DIRECTIONS
-            .iter()
-            .position(|&d| d == self.dir())
-            .unwrap_or(4)
     }
 }
 
@@ -123,9 +134,8 @@ impl Ord for State {
         other
             .f_cost()
             .cmp(&self.f_cost())
-            .then_with(|| other.straights.cmp(&self.straights))
             .then_with(|| self.pos.cmp(&other.pos))
-            .then_with(|| other.prev.cmp(&self.prev))
+            .then_with(|| self.allowed_dir.cmp(&other.allowed_dir))
     }
 }
 
@@ -133,21 +143,4 @@ impl PartialOrd for State {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
-}
-
-fn print_grid(grid: &[Vec<u8>], state: &State) {
-    println!();
-    for (i, row) in grid.iter().enumerate() {
-        for (j, cell) in row.iter().enumerate() {
-            if (i, j) == state.pos {
-                print!("\x1b[0;92m{}\x1b[0m", cell);
-            } else if state.path.contains(&(i, j)) {
-                print!("\x1b[0;91m{}\x1b[0m", cell);
-            } else {
-                print!("{}", cell);
-            }
-        }
-        println!();
-    }
-    println!();
 }
