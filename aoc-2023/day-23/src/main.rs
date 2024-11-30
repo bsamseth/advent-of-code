@@ -1,6 +1,7 @@
-use std::collections::BinaryHeap;
+use std::collections::{HashMap, HashSet};
 
 use aocd::prelude::*;
+use itertools::Itertools;
 
 #[aocd(2023, 23)]
 fn main() {
@@ -22,63 +23,99 @@ fn main() {
     submit!(2, solve(&chars));
 }
 
-fn solve(chars: &[Vec<char>]) -> usize {
-    let mut queue = BinaryHeap::new();
-    queue.push(State {
-        len: 0,
-        y: 0,
-        x: chars[0].iter().position(|x| *x == '.').unwrap(),
-        path: Vec::new(),
-    });
-    let mut max = 0;
-    while let Some(State { len, y, x, path }) = queue.pop() {
-        if y == chars.len() - 1 {
-            max = max.max(len);
+type Graph = HashMap<(usize, usize), Vec<(usize, usize, u64)>>;
+
+fn solve(chars: &[Vec<char>]) -> u64 {
+    let mut graph = Graph::new();
+    for (y, x) in (0..chars.len()).cartesian_product(0..chars[0].len()) {
+        if chars[y][x] == '#' {
             continue;
         }
+
+        let entry = graph.entry((y, x)).or_default();
+        #[allow(clippy::match_on_vec_items)]
+        let dirs = match chars[y][x] {
+            '.' => vec![(-1, 0), (1, 0), (0, -1), (0, 1)],
+            '<' => vec![(0, -1)],
+            '>' => vec![(0, 1)],
+            '^' => vec![(-1, 0)],
+            'v' => vec![(1, 0)],
+            _ => unreachable!(),
+        };
 
         #[allow(
             clippy::cast_possible_wrap,
             clippy::cast_possible_truncation,
             clippy::cast_sign_loss
         )]
-        for (dy, dx) in &[(-1, 0), (1, 0), (0, -1), (0, 1)] {
-            let ny = y as i32 + dy;
-            let nx = x as i32 + dx;
-            if ny < 0
-                || nx < 0
-                || ny >= chars.len() as i32
-                || nx >= chars[0].len() as i32
-                || chars[ny as usize][nx as usize] == '#'
-                || path.contains(&(ny as usize, nx as usize))
-            {
+        for (dy, dx) in &dirs {
+            if (y == 0 && *dy < 0) || (x == 0 && *dx < 0) {
                 continue;
             }
-
-            let (ny, nx) = (ny as usize, nx as usize);
-            match (chars[ny][nx], dy, dx) {
-                ('.', _, _) | ('<', 0, -1) | ('>', 0, 1) | ('^', -1, 0) | ('v', 1, 0) => {
-                    let mut path = path.clone();
-                    path.push((ny, nx));
-                    queue.push(State {
-                        len: len + 1,
-                        y: ny,
-                        x: nx,
-                        path,
-                    });
-                }
-                _ => {}
+            let ny = (y as isize + dy) as usize;
+            let nx = (x as isize + dx) as usize;
+            if chars
+                .get(ny)
+                .and_then(|line| line.get(nx))
+                .is_some_and(|c| *c != '#')
+            {
+                entry.push((ny, nx, 1));
             }
         }
     }
 
-    max
+    // Unlink corridor nodes (nodes with only two connections):
+    let corridor_nodes = graph
+        .iter()
+        .filter(|(_, v)| v.len() == 2)
+        .map(|(k, _)| *k)
+        .collect_vec();
+    for node in corridor_nodes {
+        let neighbors = graph.remove(&node).unwrap();
+        let (y1, x1, d1) = neighbors[0];
+        let (y2, x2, d2) = neighbors[1];
+
+        let n1 = graph.get_mut(&(y1, x1)).unwrap();
+        if let Some(i) = n1.iter().position(|(y, x, _)| (*y, *x) == node) {
+            n1[i] = (y2, x2, d1 + d2);
+        }
+
+        let n2 = graph.get_mut(&(y2, x2)).unwrap();
+        if let Some(i) = n2.iter().position(|(y, x, _)| (*y, *x) == node) {
+            n2[i] = (y1, x1, d1 + d2);
+        }
+    }
+
+    dfs(
+        &graph,
+        &mut HashSet::new(),
+        (chars.len() - 1, chars[0].len() - 2),
+        (0, 1),
+    )
+    .unwrap()
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-struct State {
-    len: usize,
-    y: usize,
-    x: usize,
-    path: Vec<(usize, usize)>,
+fn dfs(
+    graph: &Graph,
+    seen: &mut HashSet<(usize, usize)>,
+    goal: (usize, usize),
+    current: (usize, usize),
+) -> Option<u64> {
+    if current == goal {
+        return Some(0);
+    }
+    if seen.contains(&current) {
+        return None;
+    }
+    seen.insert(current);
+
+    let mut max = None;
+    for (y, x, dist) in &graph[&current] {
+        if let Some(d) = dfs(graph, seen, goal, (*y, *x)) {
+            max = Some(max.unwrap_or(0).max(d + dist));
+        }
+    }
+
+    seen.remove(&current);
+    max
 }
