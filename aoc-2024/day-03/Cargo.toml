@@ -1,0 +1,8 @@
+[package]
+name = "day-03"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aocd = "0.4.0"
+regex = "1.11.1"
