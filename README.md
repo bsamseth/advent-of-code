@@ -41,14 +41,15 @@ Each rust solution is written as a binary crate, and can be compiled and run usi
 ```
 
 
-## `init_day.py`
+## `initday`
 
-This script will fetch the description and input data for a given day and year. If run without any options, it tries to fetch the current day.
+This will setup for a given day and year. If run without any options, it tries to fetch the current day.
 
 ``` bash
-> mkdir aoc-2018  # The folder must exist first.
-> python init_day.py --day 25 --year 2018
+> ./initday --day 25 --year 2018
 ```
 
-Your AoC session key must be provided, and by default it is assumed to be the content of a file located in `~/.config/aocd/token`.
-To get the session key, open the input file url when logged in to AoC and use the inspector to look for the cookie that was sent with the request.
+Your AoC session key must be provided, and by default it is assumed to be the
+content of a file located in `~/.config/aocd/token`. To get the session key,
+open the input file url when logged in to AoC and use the inspector to look for
+the cookie that was sent with the request.
